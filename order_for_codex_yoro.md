@@ -18,9 +18,45 @@ Codex: 以下の指示に従って実行
 
 ## 📋 現在の指示
 
-### Status: Ready for first task
+### Task 001: Yoro Mode 動作確認テスト
 
-**待機中**: ユーザーの最初の指示待ち
+**目的**: Yoro Mode が正しく動作しているか確認
+
+**実行内容**:
+
+1. このファイル（order_for_codex_yoro.md）が GitHub から正しく読み込まれたか確認
+2. テストディレクトリを作成
+   ```bash
+   mkdir -p yoro_test
+   ```
+3. テストファイルを作成（yoro_test/test_001.md）
+   ```markdown
+   # Yoro Mode Test - Task 001
+
+   **Status**: ✅ SUCCESS
+
+   Codex successfully read instructions from GitHub:
+   - File: order_for_codex_yoro.md
+   - Source: https://raw.githubusercontent.com/garyohosu/virtual-company/main/order_for_codex_yoro.md
+   - Date: $(date)
+
+   **Next**: Claude AI will update order_for_codex_yoro.md with Task 002
+   ```
+
+4. Git に追加・コミット・プッシュ
+   ```bash
+   git add yoro_test/test_001.md
+   git commit -m "test: Yoro Mode Task 001 - GitHub read test completed"
+   git push origin main
+   ```
+
+5. 完了報告（ターミナルで表示）
+   ```
+   ✅ Task 001 Complete
+   - File created: yoro_test/test_001.md
+   - Pushed to GitHub: ✅
+   - Ready for Task 002
+   ```
 
 ---
 
@@ -53,10 +89,16 @@ git push origin main
 次回 Codex を起動するとき、以下の指示文を使ってください：
 
 ```
-"order_for_codex_yoro.mdをGitHubから読んで、
-その中の『現在の指示』セクションに書かれたタスクを
+order_for_codex_yoro.md をGitHub
+https://raw.githubusercontent.com/garyohosu/virtual-company/main/order_for_codex_yoro.md
+から読んでください。
+
+そして「現在の指示」セクションに書かれたタスクを
 完全に実行してください。
-完了したら git push してください。"
+
+完了したら git push してください。
+
+すべて bash で実行してください。
 ```
 
 ---
@@ -79,18 +121,30 @@ git push origin main
    ↓
 2️⃣ Codex: GitHub から order_for_codex_yoro.md を読む
    ↓
-3️⃣ Codex: 「現在の指示」を実行
+3️⃣ Codex: 「現在の指示」セクション（Task 001）を実行
    ↓
-4️⃣ Codex: 完了 → git push
+4️⃣ Codex: yoro_test/test_001.md を作成
    ↓
-5️⃣ Claude AI: GitHub で order_for_codex_yoro.md を更新
-   （次のタスクをここに記述）
+5️⃣ Codex: git push
    ↓
-6️⃣ （繰り返し）
+6️⃣ Claude AI: GitHub で order_for_codex_yoro.md を更新
+   （Task 002 を記述）
+   ↓
+7️⃣ （繰り返し）
 ```
 
 ---
 
+## 📊 進捗
+
+| Task | Status | Details |
+|------|--------|---------|
+| 001 | ⏳ Pending | GitHub read test |
+| 002 | ⏳ Pending | TBD by Claude AI |
+| 003+ | ⏳ Pending | TBD by Claude AI |
+
+---
+
 **Last Updated**: 2025-01-30  
-**Status**: Ready for Yoro mode  
+**Status**: Ready for Task 001  
 **Version**: 1.0
