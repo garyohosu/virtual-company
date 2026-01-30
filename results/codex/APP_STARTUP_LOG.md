@@ -1,4 +1,3 @@
-﻿# Error log initialized - no errors logged yet.
 C:\project\virtual-company\magicboxai\main.py:92: DeprecationWarning: 
         on_event is deprecated, use lifespan event handlers instead.
 
@@ -41,13 +40,3 @@ Traceback (most recent call last):
   File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.12_3.12.2800.0_x64__qbz5n2kfra8p0\Lib\logging\config.py", line 590, in configure
     raise ValueError('Unable to configure '
 ValueError: Unable to configure formatter 'default'
-INFO:     Started server process [15668]
-INFO:     Waiting for application startup.
-INFO:     Application startup complete.
-INFO:     Uvicorn running on http://127.0.0.1:8000 (Press CTRL+C to quit)
-INFO:     127.0.0.1:64659 - "GET /api/health HTTP/1.1" 404 Not Found
-INFO:     127.0.0.1:64660 - "GET /api/check-limit HTTP/1.1" 200 OK
-INFO:     Shutting down
-INFO:     Waiting for application shutdown.
-INFO:     Application shutdown complete.
-INFO:     Finished server process [15668]
