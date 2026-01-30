@@ -1,6 +1,6 @@
-# Skills.md - Virtual Company Learning System
+﻿# Skills.md - Virtual Company Learning System
 
-## 🎯 Purpose
+## 識 Purpose
 
 This file is a **digest** that agents read first to access collective knowledge.
 
@@ -10,7 +10,7 @@ This file is a **digest** that agents read first to access collective knowledge.
 
 ---
 
-## 📋 How to Use This File
+## 搭 How to Use This File
 
 ### Agent Reading Pattern
 
@@ -39,18 +39,18 @@ If NO:
   - Skip, continue with next pattern
 ```
 
-**Result**: You only load what you need. Efficient memory use. ✅
+**Result**: You only load what you need. Efficient memory use. 笨・
 
 ---
 
-## 📚 Error Pattern Digest
+## 答 Error Pattern Digest
 
 ### Error Pattern 001: Git Push Authentication Failure
 
 **What**: `fatal: Authentication failed for 'https://github.com/...`
 
 **Quick Fix**: Check SSH keys or git credentials  
-**Details**: → `skills/errors/001.md`
+**Details**: 竊・`skills/errors/001.md`
 
 ---
 
@@ -59,7 +59,7 @@ If NO:
 **What**: `ssh: connect to host garyo.sakura.ne.jp port 22: Connection timed out`
 
 **Quick Fix**: Verify SSH key is set up correctly  
-**Details**: → `skills/errors/002.md`
+**Details**: 竊・`skills/errors/002.md`
 
 ---
 
@@ -68,7 +68,7 @@ If NO:
 **What**: `fatal: destination path 'virtual-company' already exists`
 
 **Quick Fix**: Use `git pull` instead of `git clone` if already cloned  
-**Details**: → `skills/errors/003.md`
+**Details**: 竊・`skills/errors/003.md`
 
 ---
 
@@ -77,7 +77,7 @@ If NO:
 **What**: `fatal: name and email not configured`
 
 **Quick Fix**: Run `git config user.name "[Agent Name]"` and `git config user.email "[agent]@virtualcompany.local"`  
-**Details**: → `skills/errors/004.md`
+**Details**: 竊・`skills/errors/004.md`
 
 ---
 
@@ -86,11 +86,19 @@ If NO:
 **What**: Previous agent's RESULT.md is missing or empty
 
 **Quick Fix**: Check that agent ran `cat > results/[agent]/RESULT.md << 'EOF'...` and `git push`  
-**Details**: → `skills/errors/005.md`
+**Details**: 竊・`skills/errors/005.md`
 
 ---
 
-## ⚠️ Adding New Skills
+### Error Pattern 006: pip install fails building pydantic-core (Rust/setuptools-rust)
+
+**What**: ERROR: Could not build wheels for maturin / No matching distribution found for setuptools-rust>=1.11.0
+
+**Quick Fix**: Ensure venv pip is used/upgraded and install Rust toolchain if source build required  
+**Details**: 竊・skills/errors/006.md
+
+---
+## 笞・・Adding New Skills
 
 When you (any agent) encounter a NEW error:
 
@@ -103,7 +111,7 @@ Add to digest above:
 **What**: [Exact error message]
 
 **Quick Fix**: [1-sentence fix]  
-**Details**: → `skills/errors/NNN.md`
+**Details**: 竊・`skills/errors/NNN.md`
 ```
 
 ### 2. Create Detailed Solution File
@@ -145,11 +153,11 @@ Add:
 
 ### 4. Update this file in GitHub
 
-The next agent will benefit from your learning. ✅
+The next agent will benefit from your learning. 笨・
 
 ---
 
-## 📊 Skill Statistics
+## 投 Skill Statistics
 
 | Pattern | Status | Last Seen | Frequency |
 |---------|--------|-----------|-----------|
@@ -161,7 +169,7 @@ The next agent will benefit from your learning. ✅
 
 ---
 
-## 🎯 Key Principle
+## 識 Key Principle
 
 **Fail once, learn forever.**
 
@@ -171,21 +179,21 @@ The system gets smarter with every task.
 
 ---
 
-## 📍 Folder Structure
+## 桃 Folder Structure
 
 ```
 virtual-company/
-├── Skills.md               ← You are here (digest)
-├── Memory.md               ← Current progress
-└── skills/
-    ├── errors/
-    │   ├─ 001.md          ← Detailed solution for pattern 001
-    │   ├─ 002.md          ← Detailed solution for pattern 002
-    │   └─ ...
-    └── knowledge/
-        ├─ architecture.md  ← System architecture notes
-        ├─ lessons.md       ← Best practices learned
-        └─ ...
+笏懌楳笏 Skills.md               竊・You are here (digest)
+笏懌楳笏 Memory.md               竊・Current progress
+笏披楳笏 skills/
+    笏懌楳笏 errors/
+    笏・  笏懌楳 001.md          竊・Detailed solution for pattern 001
+    笏・  笏懌楳 002.md          竊・Detailed solution for pattern 002
+    笏・  笏披楳 ...
+    笏披楳笏 knowledge/
+        笏懌楳 architecture.md  竊・System architecture notes
+        笏懌楳 lessons.md       竊・Best practices learned
+        笏披楳 ...
 ```
 
 ---
@@ -193,3 +201,4 @@ virtual-company/
 **Last Updated**: 2025-01-30  
 **Version**: 1.0  
 **Status**: Ready for first task
+
