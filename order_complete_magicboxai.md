@@ -244,24 +244,26 @@ After this order completes:
 1. **Analysis**: MagicBoxAI is fully analyzed and planned
 2. **Documentation**: All planning is in GitHub (shareable)
 3. **Automation**: order_magicboxai_*.md files ready for next kicks
-4. **Next Step**: User can simply:
-   ```bash
-   git pull
-   codex --kick order_magicboxai_development.md
-   ```
-   And development starts automatically
+4. **Next Step**: User will know exactly what to do next (see below)
 
 ---
 
-## 📝 No User Input Needed
+## 📝 NEXT ACTION (No User Input Needed Beyond This)
 
-User action required: ONLY
+When this order completes, Codex will have created these files:
+- `magicboxai_requirements_confirmed.md`
+- `magicboxai_poc_design_final.md`
+- `magicboxai_implementation_plan.md`
+- `order_magicboxai_development.md`
+
+**User's next action** (completely clear, zero ambiguity):
+
 ```bash
 git pull
-codex --yolo order_complete_magicboxai.md
+codex --kick order_magicboxai_development.md
 ```
 
-Everything else is automatic.
+That's it. No need to ask Claude "what next". The order file IS the instruction.
 
 ---
 
