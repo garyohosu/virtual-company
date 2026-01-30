@@ -1,117 +1,235 @@
-# Agents.md - Virtual Company Agent Instructions
+# Agents.md - Virtual Company Complete Agent Framework
 
-## 🎯 Core Philosophy: GitHub-Driven Automation
+## 🎯 Core Philosophy: Fully Automated GitHub-Driven CI/CD
 
-### The Basic Concept
-
-All AI CLI agents operate under a **single, unified principle**:
+### The Vision
 
 ```
-User writes task to GitHub
-    ↓
-Each CLI reads its instruction file from GitHub
-    ↓
-Each CLI executes on Sakura server automatically
-    ↓
-Each CLI outputs human-readable results (RESULT.md)
-    ↓
-Each CLI commits and pushes to GitHub
-    ↓
+User kick (one command to CLI)
+  ↓
+Agent reads GitHub md file
+  ↓
+Agent understands complete workflow from Agents.md
+  ↓
+Agent executes automatically on Sakura server
+  ↓
+Agent outputs RESULT.md (human-readable) + technical logs
+  ↓
+Agent commits & pushes to GitHub
+  ↓
 User sees results on GitHub
-```
 
-**Key Points**:
-- **No manual copy-paste**: CLI agents read instructions from GitHub URLs
-- **No user intervention**: Once started, agents run to completion
-- **No context loss**: All information stored in GitHub, persistent across sessions
-- **Automated reporting**: Results in easy-to-read RESULT.md files
-
----
-
-## How Each Agent Works
-
-### Reading Instructions from GitHub
-
-Each agent reads its instruction file directly from GitHub:
-
-| Agent | Instruction File | Raw URL |
-|-------|-----------------|---------|
-| **Codex CLI** | order_codex.md | `https://raw.githubusercontent.com/garyohosu/virtual-company/main/order_codex.md` |
-| **Gemini CLI** | order_gemini.md | `https://raw.githubusercontent.com/garyohosu/virtual-company/main/order_gemini.md` |
-| **Claude Code** | order_claude.md | `https://raw.githubusercontent.com/garyohosu/virtual-company/main/order_claude.md` |
-| **Genspark** | order_genspark.md | `https://raw.githubusercontent.com/garyohosu/virtual-company/main/order_genspark.md` |
-
-### Execution Pattern (Same for All Agents)
-
-```bash
-1. SSH into Sakura server (garyo@garyo.sakura.ne.jp)
-2. Clone/update virtual-company repository
-3. Read tasks/CURRENT_TASK.md to understand what to do
-4. Read results from previous agents (if any)
-5. Execute your task
-6. Create RESULT.md (human-readable output)
-7. Create EXECUTION_LOG.md (technical details)
-8. Update changelog.md
-9. git add / commit / push
+Zero manual intervention after the kick.
 ```
 
 ---
 
-## Output Files (Same Structure for All Agents)
+## 📋 What Every Agent Must Do (Universal Pattern)
 
-Each agent creates the same type of output files in `results/[agent-name]/`:
+### When You Start (Same for All Agents)
 
-### 📖 RESULT.md (What the User Reads)
+1. **Read Agents.md** (this file)
+   - Understand your role
+   - Understand the complete workflow
+   - Understand output requirements
 
-**Purpose**: Human-readable summary of what was done and what was produced
+2. **git pull** the repository
+   - Keep local copy up-to-date
+   - See what previous agents did
+
+3. **Read tasks/CURRENT_TASK.md**
+   - Understand what needs to be done
+   - See specifications and requirements
+
+4. **Read results from previous agents** (if any)
+   - Understand what was already accomplished
+   - Check for issues or notes
+   - Plan your work based on their outputs
+
+5. **Execute your specific task**
+   - Follow your order_[agent].md file
+   - Use RESULT.md output format
+
+6. **Output three files:**
+   - `RESULT.md` - Human-readable summary (⭐ this is what user reads)
+   - `EXECUTION_LOG.md` - Technical details for debugging
+   - `[output files]` - Your actual work
+
+7. **Update changelog.md**
+   - Record what you did
+   - Note the status
+   - Link to RESULT.md
+
+8. **git commit & push**
+   - All files to results/[agent-name]/
+   - Clear, descriptive commit message
+   - Always push to main
+
+---
+
+## 👥 The Four Agents & Their Roles
+
+### 1️⃣ **Codex CLI** - Code Generator
+
+**Role**: Generate code based on specifications
+
+**Reads**:
+- `tasks/CURRENT_TASK.md` - What to implement
+- `Agents.md` - This file (your framework)
+- `order_codex.md` - Your specific instructions
+
+**Does**:
+- Implement the exact specification
+- Add error handling
+- Add input validation
+- Add documentation
+- Follow code standards
+
+**Outputs**:
+- `results/codex/[code_file]` - The generated code
+- `results/codex/RESULT.md` - "Here's what I generated"
+- `results/codex/EXECUTION_LOG.md` - Technical log
+- `changelog.md` - Updated with your work
+
+**Next**: Gemini reads your RESULT.md
+
+---
+
+### 2️⃣ **Gemini CLI** - Code Reviewer & Analyzer
+
+**Role**: Review code and identify risks
+
+**Reads**:
+- `tasks/CURRENT_TASK.md` - Original specification
+- `results/codex/RESULT.md` - What Codex generated
+- `results/codex/EXECUTION_LOG.md` - Technical details
+- `Agents.md` - This file
+- `order_gemini.md` - Your specific instructions
+
+**Does**:
+- Verify Codex's code matches specification
+- Identify security risks
+- Identify performance issues
+- Identify edge cases
+- Provide specific, actionable recommendations
+
+**Outputs**:
+- `results/gemini/RESULT.md` - "Here's what I found"
+- `results/gemini/ANALYSIS.md` - Detailed findings
+- `results/gemini/EXECUTION_LOG.md` - Technical log
+- `changelog.md` - Updated with your analysis
+
+**Next**: Claude reads your RESULT.md
+
+---
+
+### 3️⃣ **Claude Code** - Orchestrator & Validator
+
+**Role**: Validate all outputs and make integration decisions
+
+**Reads**:
+- `tasks/CURRENT_TASK.md` - Original specification
+- `results/codex/RESULT.md` - Codex's output summary
+- `results/gemini/RESULT.md` - Gemini's analysis summary
+- `results/codex/EXECUTION_LOG.md` - Technical details
+- `results/gemini/ANALYSIS.md` - Detailed analysis
+- `Agents.md` - This file
+- `order_claude.md` - Your specific instructions
+
+**Does**:
+- Validate Codex's code quality
+- Validate Gemini's analysis quality
+- Make decision: APPROVED / APPROVED WITH NOTES / NEEDS REVISION
+- Document validation results
+
+**Outputs**:
+- `results/claude/RESULT.md` - "Here's my validation"
+- `results/claude/INTEGRATION_SUMMARY.md` - Validation details
+- `results/claude/EXECUTION_LOG.md` - Technical log
+- `changelog.md` - Updated with your decision
+
+**Next**: Genspark reads your RESULT.md
+
+---
+
+### 4️⃣ **Genspark** - QA Engineer & Final Validator
+
+**Role**: Test everything and confirm production readiness
+
+**Reads**:
+- `tasks/CURRENT_TASK.md` - Original specification
+- `results/codex/RESULT.md` - Codex summary
+- `results/gemini/RESULT.md` - Gemini summary
+- `results/claude/RESULT.md` - Claude summary
+- All technical logs from previous agents
+- `Agents.md` - This file
+- `order_genspark.md` - Your specific instructions
+
+**Does**:
+- Test all code execution
+- Test integration
+- Test edge cases
+- Verify performance
+- Confirm production readiness
+
+**Outputs**:
+- `results/genspark/RESULT.md` - "Here are test results"
+- `results/genspark/TESTING_REPORT.md` - Detailed test results
+- `results/genspark/EXECUTION_LOG.md` - Technical log
+- `changelog.md` - Updated with test results
+
+**Final**: Task complete, user reviews on GitHub
+
+---
+
+## 📝 Output Files Structure
+
+### RESULT.md (What User Reads) ⭐
+
+**Purpose**: Human-readable summary that takes 1 minute to read
 
 **Format**:
 ```markdown
-# ✅ [Agent] Execution Result
+# ✅ [Agent Name] Execution Result
 
-**Task**: [Name]
+**Task**: [Task name]
 **Date**: [ISO timestamp]
-**Status**: ✅ SUCCESS
+**Status**: ✅ SUCCESS / ⚠️ PARTIAL / ❌ BLOCKED
 
 ## Summary
-[1-2 sentences describing what was done]
+[1-2 sentences of what was done]
 
-## Output Files
-- [file1]: [description]
-- [file2]: [description]
+## What Was Accomplished
+- ✅ Item 1
+- ✅ Item 2
+- ⚠️ Issue 1
 
-## What Was Produced
-[Bullet list of outputs]
-
-## Checklist
-- ✅ Requirement 1
-- ✅ Requirement 2
+## Key Metrics
+- Quality: [Assessment]
+- Compliance: [Percentage]%
+- Issues: [Count]
 
 ## Next Steps
 👉 [Next agent name] will now...
 
 ---
-Generated by: [Agent Name]
+**Generated by**: [Agent Name]
+**Repository**: https://github.com/garyohosu/virtual-company
 ```
 
-**Key Rule**: This file is for humans, not machines. Make it easy to read and understand.
+### EXECUTION_LOG.md (Technical Details)
 
----
-
-### 📋 EXECUTION_LOG.md (Technical Details)
-
-**Purpose**: Detailed technical log for debugging and verification
+**Purpose**: Full technical log for debugging
 
 **Contains**:
-- Input processing
+- Input processing steps
 - Execution steps taken
 - Issues encountered
 - Validation results
-- Output files created
+- Files created
+- Timestamps
 
----
-
-### 📝 changelog.md Updates
+### changelog.md (Progress Tracking)
 
 **Format**:
 ```markdown
@@ -119,156 +237,150 @@ Generated by: [Agent Name]
 
 **Task**: [Task ID]
 **Changes**: [What was done]
-**Files Modified**: [List]
 **Status**: COMPLETE / PARTIAL / BLOCKED
 **📖 View Result**: `results/[agent]/RESULT.md`
 **Next Agent**: [Next agent name]
-**Notes**: [Key findings]
 ```
 
 ---
 
-## Communication Between Agents
-
-### Sequential Execution
-
-Agents read the previous agent's outputs:
+## 🔄 Sequential Workflow Example
 
 ```
-Codex
-  ↓ writes results/codex/RESULT.md
-  ↓
-Gemini reads results/codex/RESULT.md + EXECUTION_LOG.md
-  ↓ writes results/gemini/RESULT.md
-  ↓
-Claude reads both previous results
-  ↓ writes results/claude/RESULT.md
-  ↓
-Genspark reads all previous results
-  ↓ writes results/genspark/RESULT.md
+Morning:
+  User creates/edits tasks/CURRENT_TASK.md via Claude.ai
+  User pushes to GitHub
+
+Afternoon (User kicks agents one by one):
+
+  User: codex "execute order_codex.md"
+    ↓
+  Codex reads Agents.md → understands framework
+  Codex reads order_codex.md → understands specific instructions
+  Codex reads tasks/CURRENT_TASK.md → understands specification
+  Codex generates code → creates RESULT.md
+  Codex pushes to GitHub
+    ↓
+  User: gemini "execute order_gemini.md"
+    ↓
+  Gemini reads Agents.md → understands framework
+  Gemini reads order_gemini.md → understands specific instructions
+  Gemini reads results/codex/RESULT.md → sees what Codex created
+  Gemini analyzes code → creates RESULT.md
+  Gemini pushes to GitHub
+    ↓
+  User: claude "execute order_claude.md"
+    ↓
+  Claude reads Agents.md → understands framework
+  Claude reads order_claude.md → understands specific instructions
+  Claude reads results/codex/RESULT.md + results/gemini/RESULT.md
+  Claude validates → creates RESULT.md
+  Claude pushes to GitHub
+    ↓
+  User: genspark (manual browser)
+    ↓
+  Genspark reads Agents.md → understands framework
+  Genspark reads order_genspark.md → understands specific instructions
+  Genspark reads all previous RESULT.md files
+  Genspark tests → creates RESULT.md
+  Genspark pushes to GitHub
+
+Evening:
+  User opens GitHub
+  User reads:
+    1. results/codex/RESULT.md
+    2. results/gemini/RESULT.md
+    3. results/claude/RESULT.md
+    4. results/genspark/RESULT.md
+  Done! 🎉
 ```
 
-### Accessing Previous Outputs
+---
 
+## ✅ Universal Requirements for All Agents
+
+### Before You Start
+
+- [ ] Read this Agents.md file
+- [ ] Understand your role above
+- [ ] Know what RESULT.md must contain
+- [ ] Know you must git push at the end
+- [ ] Have SSH access to Sakura server ready
+
+### During Execution
+
+- [ ] Follow your specific order_[agent].md completely
+- [ ] Read all previous agents' RESULT.md files
+- [ ] Handle all edge cases
+- [ ] Implement error handling
+- [ ] Document thoroughly
+- [ ] Validate before finishing
+
+### After Execution
+
+- [ ] Create RESULT.md (human-readable)
+- [ ] Create EXECUTION_LOG.md (technical)
+- [ ] Update changelog.md
+- [ ] git add / commit / push
+- [ ] Verify push was successful
+
+### If Something Goes Wrong
+
+- [ ] Document in EXECUTION_LOG.md
+- [ ] Mark status as PARTIAL or BLOCKED
+- [ ] Still push (so humans can see what happened)
+- [ ] Don't stop the pipeline
+
+---
+
+## 🔐 Security & Git Rules
+
+### Git Configuration
+
+All agents must set:
 ```bash
-# In Sakura server
-cd ~/virtual-company
-
-# Read what Codex did
-cat results/codex/RESULT.md
-
-# Read what Gemini analyzed
-cat results/gemini/RESULT.md
-
-# Read technical details
-cat results/gemini/EXECUTION_LOG.md
+git config user.name "[Agent Name]"
+git config user.email "[agent]@virtualcompany.local"
 ```
+
+### Commits
+
+- **Format**: `[Agent]: [Task ID] - [What was done]`
+- **Example**: `Codex: TASK-001 - Code generation complete`
+
+### .gitignore Protection
+
+Never commit:
+- .env files
+- API tokens
+- Passwords
+- Private keys
+- Hardcoded secrets
 
 ---
 
-## 🔄 Complete Workflow Example
-
-### Morning: User Creates Task
-
-Using Claude.ai with GitHub MCP:
-```
-Create/edit tasks/CURRENT_TASK.md
-git push to main
-```
-
-### Mid-Day: User Starts Agents
-
-Windows Command Prompt:
-```cmd
-virtual_company_execute.bat
-```
-
-### Agents Automatically Execute
-
-**Codex CLI** (reads from GitHub, auto-executes):
-1. Reads: https://raw.githubusercontent.com/garyohosu/virtual-company/main/order_codex.md
-2. Executes on Sakura server
-3. Outputs: RESULT.md + EXECUTION_LOG.md
-4. Commits and pushes
-
-**Gemini CLI** (reads what Codex created):
-1. Reads: order_gemini.md from GitHub
-2. Reviews Codex's RESULT.md and EXECUTION_LOG.md
-3. Executes analysis
-4. Outputs: RESULT.md + ANALYSIS.md + EXECUTION_LOG.md
-5. Commits and pushes
-
-**Claude Code** (orchestrator):
-1. Reads: order_claude.md from GitHub
-2. Reviews both previous agents' outputs
-3. Makes integration decisions
-4. Outputs: RESULT.md + INTEGRATION_SUMMARY.md + EXECUTION_LOG.md
-5. Commits and pushes
-
-**Genspark** (QA/testing):
-1. Reads: order_genspark.md from GitHub
-2. Tests everything
-3. Outputs: RESULT.md + TESTING_REPORT.md + EXECUTION_LOG.md
-4. Commits and pushes
-
-### Evening: User Reviews Results
-
-On GitHub, in numeric order:
-1. `results/codex/RESULT.md` - What code was generated
-2. `results/gemini/RESULT.md` - What risks were found
-3. `results/claude/RESULT.md` - What was approved
-4. `results/genspark/RESULT.md` - What tests passed
-5. `changelog.md` - Overall progress
-
----
-
-## Key Rules for All Agents
-
-### ✅ DO:
-
-- Read instruction file from GitHub
-- Follow the specification exactly
-- Create RESULT.md in human-readable format
-- Log everything in EXECUTION_LOG.md
-- Validate your output before committing
-- Commit with clear, descriptive messages
-- Push all changes to main
-
-### ❌ DON'T:
-
-- Assume context - always read from GitHub
-- Skip error handling
-- Leave sensitive data in outputs
-- Forget to update changelog.md
-- Commit incomplete work
-- Hardcode values
-- Leave TODO comments
-
----
-
-## GitHub Integration
-
-### Repository Structure
+## 📊 Repository Structure
 
 ```
 virtual-company/
+├── Agents.md                    ← This file (framework for all agents)
 ├── tasks/
 │   └── CURRENT_TASK.md          ← User puts task here
 ├── results/
 │   ├── codex/
-│   │   ├── RESULT.md            ← Human reads this
+│   │   ├── RESULT.md            ← Codex summary (human reads)
 │   │   ├── EXECUTION_LOG.md     ← Technical details
 │   │   └── [generated files]
 │   ├── gemini/
-│   │   ├── RESULT.md
-│   │   ├── ANALYSIS.md
+│   │   ├── RESULT.md            ← Gemini summary
+│   │   ├── ANALYSIS.md          ← Detailed analysis
 │   │   └── EXECUTION_LOG.md
 │   ├── claude/
-│   │   ├── RESULT.md
+│   │   ├── RESULT.md            ← Claude summary
 │   │   ├── INTEGRATION_SUMMARY.md
 │   │   └── EXECUTION_LOG.md
 │   └── genspark/
-│       ├── RESULT.md
+│       ├── RESULT.md            ← Genspark summary
 │       ├── TESTING_REPORT.md
 │       └── EXECUTION_LOG.md
 ├── order_codex.md               ← Codex reads this
@@ -281,76 +393,75 @@ virtual-company/
 
 ---
 
-## Environment Details
+## 🎯 Success Criteria for a Complete Task
 
-- **Server**: garyo.sakura.ne.jp
-- **User**: garyo
-- **Repository**: https://github.com/garyohosu/virtual-company
-- **Local**: Windows 11 (DOS/Command Prompt + WSL2 available)
-
----
-
-## Success Definition
-
-A task is **COMPLETE** when:
+A task is **100% COMPLETE** when:
 
 ```
 ✅ CURRENT_TASK.md is understood
-✅ Codex generates code with RESULT.md output
-✅ Gemini analyzes code with RESULT.md output
-✅ Claude reviews and approves with RESULT.md output
-✅ Genspark tests and validates with RESULT.md output
+✅ Codex generates code with RESULT.md
+✅ Gemini analyzes code with RESULT.md
+✅ Claude validates with RESULT.md
+✅ Genspark tests with RESULT.md
 ✅ All RESULT.md files are human-readable
 ✅ All changes are committed and pushed
 ✅ changelog.md is updated
-✅ User can view results/*/RESULT.md to see what happened
+✅ User can review results/*/RESULT.md files
+✅ No manual copy-paste needed
 ```
 
 ---
 
-## Universal Agent Requirements
+## 🔧 Environment Details
 
-### Before Starting Any Task
-
-1. Read `order_[agent].md` from GitHub
-2. Understand the current task from `tasks/CURRENT_TASK.md`
-3. Review all previous agents' RESULT.md files
-4. Check `.gitignore` for security rules
-5. Verify SSH access to Sakura server works
-
-### During Execution
-
-1. Follow specification completely
-2. Handle all edge cases
-3. Add error handling
-4. Document your work
-5. Validate outputs before commit
-
-### After Execution
-
-1. Create RESULT.md (human-readable)
-2. Create EXECUTION_LOG.md (technical)
-3. Update changelog.md (progress tracking)
-4. Commit with clear message
-5. Push to main branch
-
-### If Issues Occur
-
-1. Document in EXECUTION_LOG.md
-2. Flag as "BLOCKED" or "PARTIAL" in RESULT.md
-3. Mark in changelog.md
-4. Still commit and push (so humans can see what happened)
+- **Sakura Server**: garyo.sakura.ne.jp
+- **Username**: garyo
+- **Repository**: https://github.com/garyohosu/virtual-company
+- **Local Setup**: Windows 11 (DOS/cmd), optionally WSL2
+- **All agents**: Read from GitHub, execute on Sakura, push results
 
 ---
 
-## Version History
+## 📞 Communication Between Agents
 
-- **v1.0** (2025-01-30): Initial framework created
-- **v1.1** (2025-01-30): Added RESULT.md for easy human reading
-- **v1.2** (2025-01-30): Added Core Philosophy section
+Agents communicate through:
+
+1. **RESULT.md** (what they accomplished, in plain language)
+2. **EXECUTION_LOG.md** (detailed technical info if needed)
+3. **changelog.md** (timeline of what happened)
+
+**No direct API calls needed.** Just read GitHub files.
+
+---
+
+## 🚀 The Future: Even More Automation
+
+Currently:
+- User kicks each agent manually (4 commands)
+
+Possible future:
+- GitHub Actions could kick agents automatically
+- Discord bot could notify when tasks are complete
+- Scheduled tasks could run at specific times
+
+But for now: **User kicks → Agents read Agents.md → Everything else automatic**
+
+---
+
+## Final Note: You Are Self-Documenting
+
+This Agents.md file IS your documentation. If an agent reads this file, they understand:
+- The complete framework
+- Their specific role
+- How to output files
+- How to integrate with other agents
+- What success looks like
+
+**Everything flows from this one file.**
 
 ---
 
 **Last Updated**: 2025-01-30  
-**Maintained By**: Claude AI (via GitHub MCP)  
-**Status**: Active - Ready for production use
+**Version**: 2.0 (Complete Self-Contained Framework)  
+**Status**: ✅ Ready for Production  
+**Maintained By**: Claude AI via GitHub MCP
