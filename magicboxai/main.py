@@ -125,6 +125,12 @@ def index() -> HTMLResponse:
     return HTMLResponse(html_path.read_text(encoding="utf-8"))
 
 
+@app.get("/api/health")
+async def health_check():
+    """Health check endpoint."""
+    return {"status": "ok", "timestamp": datetime.now().isoformat()}
+
+
 @app.post("/api/save")
 def save_code(payload: SaveRequest, request: Request):
     if not payload.html or not payload.html.strip():

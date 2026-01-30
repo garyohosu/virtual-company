@@ -17,6 +17,10 @@ class DualWriter:
         for f in self._files:
             f.flush()
 
+    def isatty(self):
+        """Return True if any underlying file is a TTY."""
+        return any(hasattr(f, "isatty") and f.isatty() for f in self._files)
+
 
 def setup_logging(log_dir: str = "results/codex") -> dict:
     """Configure logging to console + files and return log paths."""
