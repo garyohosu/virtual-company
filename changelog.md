@@ -1,5 +1,12 @@
 ## [2026-01-31] - Codex CLI
 
+**Task**: Failure Records 作成
+**Changes**: Added failure records 001-005, summary, and note ideas under results/failure_records.
+**Status**: COMPLETE
+**?? View Result**: esults/codex/RESULT.md
+**Next Agent**: CEO
+## [2026-01-31] - Codex CLI
+
 **Task**: Sakura public_html index.html セキュリティ修正
 **Changes**: Added redirect index.html in public_html and SECURITY_FIX_COMPLETE.txt; curl to 127.0.0.1 failed.
 **Status**: PARTIAL
@@ -123,5 +130,6 @@
 **Next Agent**: CEO
 **Learning**: Documented Error Pattern 008 for pip dependency conflicts
 **File**: skills/errors/008.md
+
 
 
