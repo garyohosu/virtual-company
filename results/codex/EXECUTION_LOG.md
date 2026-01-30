@@ -1,28 +1,32 @@
-ï»¿# EXECUTION_LOG.md - Codex Sakura Python 3.8 Compatibility
+# EXECUTION LOG - Codex CLI
 
-Start: 2026-01-31T07:01:26.4976207+09:00
+Date: 2026-01-31T07:17:11.8441582+09:00
 
 ## Steps Executed
-1. Verified Python version on Sakura.
-2. Attempted Python 3.8 compatible dependency install (fastapi==0.100.0, pydantic==2.0.0, uvicorn==0.23.0, etc.).
-3. Ran pip list and import check for fastapi/uvicorn/pydantic.
-4. Installed gunicorn and attempted version check.
-5. Checked magicboxai/ and scripts/ directories; attempted DB init.
-6. Ran pytest and captured output to test_results_py38.txt.
-7. Ran gunicorn UvicornWorker startup test.
-8. Generated SETUP_PYTHON38_COMPLETE.md locally from remote date/host and SCPâ€™d it to Sakura.
+1. git pull (completed)
+2. Read Agents.md / Skills.md / Memory.md / tasks/CURRENT_TASK.md
+3. Read order_sakura_php_cgi”Å.md
+4. SSH: create /home/garyo/public_html/magicboxai with data,cgi-bin,uploads
+5. SSH: create index.php (routing + save/view)
+6. SSH: create pages/home.php (UI)
+7. SSH: chmod data uploads
+8. SSH: curl http://127.0.0.1/~garyo/magicboxai/index.php/api/health
+9. SSH: create cron_cleanup.php and add crontab
+10. SSH: create DEPLOYMENT_COMPLETE.txt
 
-## Key Outputs
-- results/codex/SAKURA_PYTHON38_LOG.md: Full SSH output and errors.
-- results/codex/test_results_py38.txt: Pytest output (pytest missing).
-- results/codex/SETUP_PYTHON38_COMPLETE.md: Setup summary copied to server.
+## Notes / Errors
+- curl health check returned HTTP code 000; /tmp/magicboxai_health.json not created.
+- SSH is non-interactive (no TTY). Warnings shown but commands executed.
 
-## Issues Encountered
-- Dependency conflict: fastapi==0.100.0 and pydantic==2.0.0 incompatible (ResolutionImpossible).
-- pip still reports system site-packages version 21.0.1.
-- fastapi/uvicorn/pytest not installed due to dependency conflict.
-- scripts/ directory missing; scripts.init_db failed.
-- gunicorn UvicornWorker failed due to missing uvicorn.
-- gunicorn --version not supported in this build.
+## Files Created/Updated (Server)
+- ~/public_html/magicboxai/index.php
+- ~/public_html/magicboxai/pages/home.php
+- ~/public_html/magicboxai/cron_cleanup.php
+- ~/public_html/magicboxai/DEPLOYMENT_COMPLETE.txt
+- ~/public_html/magicboxai/data/magicboxai.db
+- ~/public_html/magicboxai/data/uploads/ (dir)
 
-End: 2026-01-31T07:01:26.5006200+09:00
+## Local Files Updated
+- results/codex/RESULT.md
+- results/codex/EXECUTION_LOG.md
+- changelog.md (pending)
