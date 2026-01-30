@@ -1,0 +1,6 @@
+__pycache__/
+*.pyc
+magicboxai.db
+magicboxai_storage/
+results/codex/*.log
+.env

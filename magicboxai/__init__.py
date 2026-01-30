@@ -1,0 +1,1 @@
+"""MagicBoxAI MVP package."""
