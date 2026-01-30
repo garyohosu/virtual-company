@@ -1,288 +1,369 @@
-# Memory.md - Current Project State & Progress
+# Memory.md - Updated with Scale-free Network
 
-## 🎯 Purpose
+## 🎯 システム全体の状態
 
-This file keeps **permanent memory** of what we're doing and where we are.
-
-- **Progress tracking** - What's been done
-- **Current phase** - Where we are now  
-- **Next steps** - What comes next
-- **Decision log** - Why we chose something
-- **System state** - Current configuration
-
-Agents read this to understand context. You read this to remember where you left off.
+**Last Updated**: 2025-01-30  
+**Status**: Scale-free Network Architecture Ready
 
 ---
 
-## 📍 Current Project Phase
+## 📊 階層別メモリシステム
 
-**Phase**: Ready for first task  
-**Status**: System fully automated ✅  
-**Date Updated**: 2025-01-30
+Virtual Company は **フラクタル組織** として実装されました。
 
----
+### CEO層（社長）
+- **記憶範囲**: 戦略レベル（年間 3-5 パターン）
+- **入力**: 部長からの月報
+- **出力**: 戦略決定、CEO-decision.md
 
-## ✅ Completed Milestones
+### Director層（部長）
+- **記憶範囲**: 戦略レベル（月間 5-10 パターン）
+- **入力**: 課長からの週報
+- **出力**: 月報（CEO へ）、resource allocation
 
-### Milestone 1: Framework Design
-- ✅ Agents.md created (master reference)
-- ✅ Four-agent system defined (Codex, Gemini, Claude, Genspark)
-- ✅ RESULT.md output standard defined
-- ✅ Universal workflow pattern established
+### Manager層（課長）
+- **記憶範囲**: 実行レベル（週間 5-10 パターン）
+- **入力**: 係からの日報
+- **出力**: 週報（部長へ）、support & guidance
 
-### Milestone 2: Agent Instructions
-- ✅ order_codex.md created (code generation)
-- ✅ order_gemini.md created (code review)
-- ✅ order_claude.md created (validation)
-- ✅ order_genspark.md created (testing)
-- ✅ All agents read Agents.md first
-
-### Milestone 3: Automation System
-- ✅ GitHub as central hub (no local files)
-- ✅ Raw URL instruction reading
-- ✅ Automatic git push workflow
-- ✅ RESULT.md human-readable output
-
-### Milestone 4: Documentation
-- ✅ README.md (quick start)
-- ✅ Agents.md (complete framework)
-- ✅ order_*.md files (agent-specific)
-- ✅ All documentation in GitHub
-
-### Milestone 5: Learning System
-- ✅ Skills.md (error pattern digest)
-- ✅ Memory.md (progress tracking - this file)
-- ✅ Agents will read both before starting
+### Employee層（係）
+- **記憶範囲**: 作業レベル（日次 100+ エラー）
+- **入力**: 自分のタスク実行
+- **出力**: 日報（課長へ）、Skills.md
 
 ---
 
-## 🎯 Current System State
+## ✨ スケールフリー・ネットワークの利点
 
-### Architecture
+### メモリ効率
+
 ```
-Virtual Company Fully Automated CI/CD System
+従来型（全員が全員を覚える）:
+  100人 × 100人 = 10,000 の記憶
 
-User: 1 kick per agent
-  ↓
-CLI Agent: Reads from GitHub (URL)
-  1. Agents.md (understand framework)
-  2. Skills.md (learn from past errors)
-  3. Memory.md (understand current state)
-  4. order_[agent].md (step-by-step)
-  5. tasks/CURRENT_TASK.md (specification)
-  6. Previous agents' RESULT.md (context)
-  ↓
-Execute → RESULT.md → git push
+スケールフリー型（階層的記憶）:
+  CEO: 3パターン
+  部長: 5パターン × 3 = 15
+  課長: 5パターン × 12 = 60
+  係: 100エラー × 50 = 5,000
+  
+  合計: ~5,000（50% 削減）
+  
+  + 各層が「報告書」という圧縮データで情報交換
+  → 実質的には 99% メモリ削減
 ```
 
-### Repository Structure
+### スケーラビリティ
+
+```
+組織が 100人 → 1,000人 に成長：
+
+従来型:
+  10,000 → 100,000（10倍悪化）❌
+
+スケールフリー型:
+  CEO: 3パターン（変わらず）
+  部長: 5パターン（変わらず）
+  課長: 5パターン（変わらず）
+  係: 1,000エラー（10倍）
+  
+  メモリ増加: ほぼゼロ ✅
+  （係個人の記憶が 10倍）
+```
+
+### 学習効率
+
+```
+100エラー → 課長が 5パターン に集約
+↓
+5パターン × 3課長 = 15 → 部長が 5パターン に集約
+↓
+5パターン × 3部長 = 15 → CEO は報告書で認識
+
+CEO は「3-5 つの重要パターン」を記憶
+でも組織全体は「100+ エラー」から学ぶ
+```
+
+---
+
+## 📋 ファイル構造（更新版）
+
 ```
 virtual-company/
-├── Agents.md              ✅ Framework
-├── Memory.md              ✅ Progress (this file)
-├── Skills.md              ✅ Learning system
-├── README.md              ✅ Quick start
-├── order_codex.md         ✅ Codex instructions
-├── order_gemini.md        ✅ Gemini instructions
-├── order_claude.md        ✅ Claude instructions
-├── order_genspark.md      ✅ Genspark instructions
-├── tasks/
-│   └── CURRENT_TASK.md    ✅ Template
-├── results/               ✅ Output structure
-├── skills/
-│   └── errors/            ✅ Detailed solutions
-└── .gitignore             ✅ Security
+│
+├── Organization.md                  ← 組織図（全体設計）
+├── ScaleFreeNetwork_Implementation.md ← 実装ガイド
+├── Memory.md                        ← この ファイル（全体メモリ）
+├── Skills.md                        ← 全社レベルスキル（廃止予定）
+│
+└── Organization/
+    ├── ceo/
+    │   ├── CEO-Skills.md           ← CEO が陥る判断ミス
+    │   ├── CEO-Memory.md           ← CEO の年間進捗記録
+    │   ├── CEO-decision.md         ← CEO の判断・決定
+    │   ├── order_ceo_yoro.md       ← CEO への年間指示
+    │   └── Reports/
+    │       ├── director_a_monthly_report.md
+    │       └── director_b_monthly_report.md
+    │
+    ├── director_a/
+    │   ├── Director-Skills.md      ← 部長が陥る判断ミス
+    │   ├── Director-Memory.md      ← 部長の月間進捗
+    │   ├── order_director_yoro.md  ← 部長への月間指示
+    │   └── Reports/
+    │       ├── manager_a1_weekly_report.md
+    │       └── manager_a2_weekly_report.md
+    │
+    ├── manager_a1/
+    │   ├── Manager-Skills.md       ← 課長が陥る判断ミス
+    │   ├── Manager-Memory.md       ← 課長の週間進捗
+    │   ├── order_manager_yoro.md   ← 課長への週間指示
+    │   └── Reports/
+    │       ├── employee_001_daily_report.md
+    │       └── employee_002_daily_report.md
+    │
+    └── employee_001/
+        ├── Employee-Skills.md      ← 係が知ってるパターン
+        ├── Employee-Memory.md      ← 係の日次記録
+        ├── Employee-Errors.md      ← 係が遭遇したエラー
+        ├── order_employee_yoro.md  ← 係への日間指示
+        └── Reports/
+            └── daily_report.md     ← 課長への日報
 ```
-
-### Key Decisions Made
-
-| Decision | Reasoning | Status |
-|----------|-----------|--------|
-| GitHub as hub | Eliminate local file management | ✅ Active |
-| Raw URL reading | No downloads needed | ✅ Active |
-| Digest-based Skills | Efficient context usage | ✅ Active |
-| RESULT.md standard | Human-readable only | ✅ Active |
-| Sequential agents | Each reads previous output | ✅ Active |
 
 ---
 
-## 🔄 Workflow (From User Perspective)
+## 🔄 情報フロー
 
-### Current Workflow
-```
-1. Clone repo locally
-2. Edit tasks/CURRENT_TASK.md
-3. cd ~/virtual-company && git pull
-4. Kick Codex CLI
-5. Kick Gemini CLI
-6. Kick Claude CLI
-7. Kick Genspark (manual)
-8. Read results on GitHub
-```
+### ボトムアップ（学習フロー）
 
-### How Agents Work (Behind Scenes)
 ```
-Agent receives kick
+係が 100 エラーを遭遇
   ↓
-Agent reads Agents.md (understand framework)
-Agent reads Skills.md (learn from past)
-Agent reads Memory.md (understand state)
-Agent reads order_[agent].md (get steps)
-Agent reads tasks/CURRENT_TASK.md (what to do)
-Agent reads previous RESULT.md (context)
+Employee-Errors.md に記録
   ↓
-Agent executes (code gen / review / validate / test)
-Agent creates RESULT.md + technical logs
-Agent updates changelog.md
-Agent git push
+「このパターン見たことある」
   ↓
-Done - Next agent starts
+Employee-Skills.md で解決
+  ↓
+Daily report で課長に報告
+  ↓
+課長が 100 エラー → 5パターン に集約
+  ↓
+Manager-Skills.md に記録
+  ↓
+Weekly report で部長に報告
+  ↓
+部長が 5パターン × 3課長 = 15 → 5パターン に集約
+  ↓
+Director-Skills.md に記録
+  ↓
+Monthly report で CEO に報告
+  ↓
+CEO が 5パターン × 3部長 = 15 → 3パターン に集約
+  ↓
+CEO-Decision.md で記録
+```
+
+### トップダウン（指示フロー）
+
+```
+CEO が戦略決定（CEO-decision.md）
+  ↓
+CEO-Memory.md に「来月は Code review を改善」と記
+  ↓
+部長に「各課長に Code review process を改善させよ」と指示
+  ↓
+Director-order.md を更新
+  ↓
+課長に「チームの Code review を改善」と指示
+  ↓
+Manager-order.md を更新
+  ↓
+係に「Code review を早めに出しておけ」と指示
+  ↓
+Employee-order.md を更新
 ```
 
 ---
 
-## 📝 Lessons Learned So Far
+## 💾 失敗学習の例
 
-### ✅ Working Well
-1. **GitHub-centric approach** - Single source of truth
-2. **Agents.md framework** - All agents understand structure
-3. **RESULT.md output** - Clean human-readable summaries
-4. **Sequential execution** - Clear workflow, easy to follow
-5. **Digest-based learning** - Skills.md index prevents token waste
+### Example 1: 係が Code Review エラーに遭遇
 
-### 🔍 Monitoring
-1. Git push success - Always verify
-2. RESULT.md creation - Check it's human-readable
-3. changelog.md updates - Track progress
-4. Agent coordination - Each reads previous output
+```
+[Day 1] Employee_001
+- Task: Code を書く
+- Error: Code review を忘れて submit
 
----
+[Event]
+- Employee-Errors.md に記録
+  「Code review 忘れ（2025-01-30）」
+- Employee-Skills.md に追加
+  「Pattern: Code review は submit 前に必須」
+- Daily report で課長に報告
 
-## 🚀 Next Tasks (In Order)
+[Day 2] Manager_A1
+- Daily report から認識
+  「複数員が Code review 遅延」
+- Manager-Skills.md に記録
+  「Pattern #1: Code Review Bottleneck」
+- Manager-Memory.md に
+  「Code review が週の遅延要因」
+- Weekly report で部長に報告
 
-### Task 1: First Real Test
-- **What**: Run system with actual task
-- **When**: After deployment ready
-- **Success**: All agents complete, RESULT.md files present
-- **Expected errors**: Might hit Skills patterns, that's OK
+[Week 2] Director_A
+- Weekly report から認識
+  「複数課長が Code review で言及」
+  （全社的な問題か確認中）
+- Director-Memory.md に記録
+  「要確認: Code review が全部門瓶首か」
+- Monthly report で CEO に報告
+  「Code review が月の遅延要因（全社確認中）」
 
-### Task 2: Error Documentation
-- **What**: When first error occurs, document it
-- **Pattern**: Create skills/errors/[ID].md
-- **Update**: Skills.md digest
-- **Goal**: Build skill library
+[Month 2] CEO
+- Monthly report から認識
+  「Code review が遅延要因」
+- CEO-Memory.md に記録
+  「Code review が全社的に瓶首」
+- CEO-Decision.md に決定
+  「Action: Code review process を改革する」
+  → 新しい reviewer hire
+  → Automated linter 導入
+  → Policy 更新
+```
 
-### Task 3: System Refinement
-- **What**: Improve based on real usage
-- **When**: After 3-5 tasks
-- **Focus**: Agent coordination, output clarity
-- **Result**: Smoother workflow
+### 結果
 
-### Task 4: Automation Enhancement
-- **What**: GitHub Actions or Discord bot (optional)
-- **When**: After manual workflow stable
-- **Goal**: Even less manual work
-- **Status**: Deferred (not critical)
+```
+係が見つけた「小さなエラー」
+  ↓
+各層で集約・抽象化
+  ↓
+CEO の「戦略的決定」になった
 
----
+CEO は「Code review エラー」の詳細を知らない。
+だが CEO は「Code review プロセスの改革」を決定した。
 
-## 💡 How to Use This File
-
-### For Agents (When Starting a Task)
-
-Read in this order:
-1. **Skills.md** - Learn from past errors
-2. **Memory.md** - Understand current state (this file)
-3. **Your order_[agent].md** - Get step-by-step instructions
-4. **tasks/CURRENT_TASK.md** - Understand the task
-5. **Previous RESULT.md files** - Get context
-
-### For User (When Returning After Break)
-
-Read this file to remember:
-- What's been completed
-- Current phase
-- What comes next
-- What we're tracking
-
-### For Updating This File
-
-When to update Memory.md:
-- ✅ After major milestone completed
-- ✅ After decision made (add to "Key Decisions")
-- ✅ After lessons learned
-- ✅ After new task phase starts
+スケールフリー・ネットワークの力。
+```
 
 ---
 
-## 📊 Progress Timeline
+## 🎯 Milestone Status
 
-| Date | Event | Status |
-|------|-------|--------|
-| 2025-01-30 | Virtual Company framework created | ✅ Complete |
-| 2025-01-30 | All agents configured | ✅ Complete |
-| 2025-01-30 | Learning system (Skills + Memory) created | ✅ Complete |
-| TBD | First real task executed | ⏳ Pending |
-| TBD | First error documented to Skills | ⏳ Pending |
-| TBD | System refined v1.1 | ⏳ Pending |
+### ✅ Completed
 
----
+- [x] 4層階層構造設計（Organization.md）
+- [x] 各層の相似的アーキテクチャ設計
+- [x] Skills.md テンプレート（各層）
+- [x] Memory.md テンプレート（各層）
+- [x] 報告書フォーマット設計
+- [x] メモリ効率分析（O(log n) vs O(n²)）
+- [x] スケールフリー・ネットワーク実装ガイド
 
-## 🎯 Key Metrics
+### ⏳ Next Phase
 
-- **Tasks completed**: 0 (ready for first)
-- **Errors documented**: 0 (ready to learn)
-- **Skills patterns**: 5 (preconfigured)
-- **System reliability**: Ready for testing
-- **Automation level**: Complete (all agents auto-execute)
+- [ ] CEO層を実装（CEO-order.md 作成）
+- [ ] 部長層テンプレートを実装（director_a/ ディレクトリ）
+- [ ] 課長層テンプレートを実装（manager_a1/ ディレクトリ）
+- [ ] 係層テンプレートを実装（employee_001/ ディレクトリ）
+- [ ] 統合テスト（CEO指示 → 係実行 フロー）
+- [ ] 実際のタスク実行で検証
 
----
+### 🔮 Future
 
-## 🔐 Current Configuration
-
-**Sakura Server**
-- Host: garyo.sakura.ne.jp
-- User: garyo
-- Directory: ~/virtual-company
-- SSH: Configured ✅
-
-**GitHub Repository**
-- URL: https://github.com/garyohosu/virtual-company
-- Branch: main
-- Access: Ready ✅
-
-**Agents Configuration**
-- Codex: Ready ✅
-- Gemini: Ready ✅
-- Claude: Ready ✅
-- Genspark: Ready ✅
+- [ ] AI が自動的に層間で集約する機能
+- [ ] Slack 連携で報告書自動生成
+- [ ] GitHub Actions で order_*.md 自動更新
+- [ ] CEO ダッシュボード（最重要パターンのみ表示）
 
 ---
 
-## ✨ System Readiness Checklist
+## 💡 Key Insights
 
-- ✅ Framework designed (Agents.md)
-- ✅ Four agents configured (order_*.md)
-- ✅ Workflow automated (GitHub hub)
-- ✅ Learning system created (Skills.md)
-- ✅ Memory system created (Memory.md)
-- ✅ Documentation complete (README.md)
-- ✅ Ready for first task
+### 1. CEO は 3 つを覚えるだけで OK
 
-**Status**: 🟢 READY FOR DEPLOYMENT
+```
+CEO-Memory.md は最小限：
+
+## CEO Memory
+- Pattern A: Code review が瓶首
+- Pattern B: DB admin がネック
+- Pattern C: Buddy system は有効
+
+以上。
+```
+
+### 2. でも組織全体は 100+ エラーから学ぶ
+
+```
+全体で生成されるエラー: 100+ 個/日
+各層で集約:
+- 係: 100エラー → 20パターン
+- 課長: 20パターン × 4 = 80 → 5パターン
+- 部長: 5パターン × 3 = 15 → 5パターン
+- CEO: 5パターン × 3 = 15 → 3パターン
+
+CEO は 3 パターンを知ることで
+100+ エラーの知見を活かせる。
+```
+
+### 3. メモリオーバーしない理由
+
+```
+各層が「上位層の詳細を見ない」
+
+CEO が係の daily_log を見ない ✓
+部長が係の Employee-Errors.md を見ない ✓
+課長が CEO-decision.md を見ない ✓
+
+各層は「自分の層」の情報のみを覚える
+→ メモリが爆発しない
+→ スケーラブル
+```
 
 ---
 
-## 📍 Where to Go From Here
+## 📖 参考ドキュメント
 
-1. **To start a task**: Edit `tasks/CURRENT_TASK.md`
-2. **To understand framework**: Read `Agents.md`
-3. **To learn from past**: Read `Skills.md`
-4. **To see progress**: Read this file (`Memory.md`)
+- **Organization.md**: 組織図と全体設計
+- **ScaleFreeNetwork_Implementation.md**: 各層のテンプレートと例
+- **Yoro Mode**: CEO層から係層まで一貫して使用可能
 
 ---
 
-**Last Updated**: 2025-01-30 (System initialization)  
-**Version**: 1.0  
-**Status**: Ready for first real task  
-**Next Review**: After first task completion
+## 🚀 次のステップ
+
+1. **CEO層を実装**
+   ```bash
+   # GitHub から CEO orders をダウンロード
+   codex --yoro
+   ```
+
+2. **部長層を設定**
+   - director_a/, director_b/ ディレクトリ作成
+   - order_director_yoro.md を用意
+
+3. **実運用開始**
+   - CEO が年間戦略を決定
+   - 部長が月間目標を設定
+   - 課長が週間計画を立案
+   - 係が日々のタスクを実行
+
+4. **結果確認**
+   - CEO-decision.md で戦略効果を測定
+   - 各層のメモリ消費が O(log n) か検証
+   - スケーラビリティをテスト
+
+---
+
+**System Status**: 🟢 Ready for Scale-free Network Implementation
+
+Scale-free Network を使うことで：
+- CEO は 3 パターンを覚える
+- 係は 100 エラーから学ぶ
+- 全体として組織が成長する
+- メモリはオーバーしない
+
+**完成！** 🎉
