@@ -1,75 +1,83 @@
 # Order for Gemini CLI - Virtual Company
 
-This file is read and executed by Gemini CLI from GitHub.
+## 🟢 BEFORE YOU START: READ AGENTS.MD FIRST
 
-## Execution Environment
+**This is CRITICAL**: Before executing this file, read:
 
-**Server**: garyo.sakura.ne.jp  
-**User**: garyo  
+👉 **https://raw.githubusercontent.com/garyohosu/virtual-company/main/Agents.md**
+
+Agents.md contains:
+- Your role as Gemini agent
+- Universal workflow for all agents
+- How to output RESULT.md
+- How to commit and push
+- Everything you need to understand the framework
+
+**After reading Agents.md, come back here and execute the steps below.**
 
 ---
 
-## Execution Flow
+# Gemini CLI Specific Instructions
 
-### Step 1: SSH Login to Sakura Server
+## Your Role (From Agents.md)
 
-```bash
-ssh garyo@garyo.sakura.ne.jp
-```
+You are the **Code Reviewer & Analyzer**. Your job:
+1. Read what Codex generated
+2. Review it against the specification
+3. Identify risks and issues
+4. Provide recommendations
+5. Output RESULT.md (human-readable) + ANALYSIS.md
 
-### Step 2: Update Repository
+---
+
+## Step-by-Step Execution
+
+### Step 1: git pull
 
 ```bash
 cd ~/virtual-company
 git pull origin main
 ```
 
-### Step 3: Configure Git (First Time Only)
+### Step 2: Configure Git (First Time Only)
 
 ```bash
 git config user.name "Gemini CLI"
 git config user.email "gemini@virtualcompany.local"
 ```
 
-### Step 4: Read Current Task
+### Step 3: Read the Original Specification
 
 ```bash
 cat tasks/CURRENT_TASK.md
 ```
 
-### Step 5: Review Codex's Output
+### Step 4: Read Codex's Output Summary
 
 ```bash
 cat results/codex/RESULT.md
-cat results/codex/EXECUTION_LOG.md
-cat results/codex/*.py  # or relevant file
 ```
 
-### Step 6: Conduct Analysis
+This tells you what Codex generated in human-readable form.
 
-Analyze the following:
+### Step 5: Review Codex's Code
 
-#### Specification Compliance
-- [ ] All requirements from CURRENT_TASK.md implemented
-- [ ] No extra features added without specification
-- [ ] Edge cases considered
-- [ ] Error cases handled
+```bash
+# Read the actual generated code
+cat results/codex/*.py  # or relevant file extension
+cat results/codex/EXECUTION_LOG.md  # for technical details
+```
 
-#### Code Quality
-- [ ] Follows naming conventions
-- [ ] Code is clear and readable
-- [ ] Logic is correct
-- [ ] Performance is acceptable
+### Step 6: Conduct Your Analysis
 
-#### Risk Assessment
-- [ ] Security issues identified
-- [ ] Potential bugs logged
-- [ ] Edge cases documented
-- [ ] Scalability concerns noted
+Check for:
+- ✅ Specification compliance (does it match requirements?)
+- ✅ Code quality (is code well-written?)
+- ✅ Security issues (are there vulnerabilities?)
+- ✅ Performance concerns (will it be fast enough?)
+- ✅ Edge cases (what could break?)
 
-### Step 7: Create RESULT.md (For Easy Reading)
-
-**⭐ This is what the user will read**
+### Step 7: Create RESULT.md
 
 ```bash
 mkdir -p results/gemini
@@ -77,115 +85,102 @@ mkdir -p results/gemini
 cat > results/gemini/RESULT.md << 'EOF'
 # ✅ Gemini Execution Result
 
-**Task**: [Task Name from CURRENT_TASK.md]  
-**Date**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")  
+**Task**: [Task Name from CURRENT_TASK.md]
+**Date**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
 **Status**: ✅ ANALYSIS COMPLETE
 
 ## Summary
 
-Reviewed and analyzed Codex's implementation. Identified risks and provided recommendations.
+Reviewed Codex's implementation against specification and identified [N] findings.
 
 ## Key Findings
 
 ### Specification Compliance
-- ✅ All requirements implemented
-- Coverage: [Percentage]%
+- ✅ 100% / 95% / [percentage]% of requirements met
+- All core features implemented
+- [Any missing features]
 
-### Code Quality Assessment
+### Code Quality
 **Strengths**:
 - [Strength 1]
 - [Strength 2]
 
-**Areas for Improvement**:
-- [Area 1]: [Recommendation]
-- [Area 2]: [Recommendation]
+**Issues Found**:
+- [Issue 1]: [Recommendation]
+- [Issue 2]: [Recommendation]
 
-### Risk Assessment
+### Risks Identified
 
-**Critical Risks** (Must fix):
+**Critical** (Must fix):
 - [Risk 1]: [Impact]
 
-**Important Risks** (Should fix):
+**Important** (Should fix):
 - [Risk 1]: [Recommendation]
 
-**Minor Issues** (Nice to improve):
+**Minor** (Nice to improve):
 - [Issue 1]: [Suggestion]
 
-### Security Analysis
+### Security Check
 - ✅ Input validation present
 - ✅ Error handling robust
 - ✅ No hardcoded secrets
 
-## Overall Verdict
+## Verdict
 
-**Ready for Claude review**: YES / NO
+**Overall Quality**: Excellent / Good / Acceptable / Needs Work
 
-[Brief assessment of code quality and readiness]
+Ready for Claude validation: ✅ YES / ❌ NO
 
-## Recommendations (Priority Order)
+## Next Steps
 
-1. **Critical**: [Action item]
-2. **Important**: [Action item]
-3. **Enhancement**: [Action item]
-
-## Output Files
-
-- 📄 `results/gemini/RESULT.md` - This summary (easy reading)
-- 📄 `results/gemini/ANALYSIS.md` - Detailed analysis
-- 📄 `results/gemini/EXECUTION_LOG.md` - Technical log
+👉 **Claude Code** will now validate all outputs.
 
 ---
-
-**Generated by**: Gemini CLI  
-**Next Step**: Claude Code will review this analysis  
+**Generated by**: Gemini CLI
+**View Next Step**: See results/claude/RESULT.md after Claude runs
 **Repository**: https://github.com/garyohosu/virtual-company
 EOF
 ```
 
-### Step 8: Create ANALYSIS.md
+### Step 8: Create ANALYSIS.md (Detailed)
 
 ```bash
 cat > results/gemini/ANALYSIS.md << 'EOF'
 # Detailed Analysis Report - Gemini CLI
 
-## Task: [from CURRENT_TASK.md]
+**Task**: [from CURRENT_TASK.md]
 **Date**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
 **Status**: COMPLETE
 
-## Executive Summary
-[1-2 sentence overview of code quality and risks]
+## Specification Compliance Review
 
-## Implementation Review
+**Compliance Level**: [Percentage]%
 
-### Specification Compliance
-**Overall**: [Percentage]%
+Implemented:
+- ✅ Requirement 1
+- ✅ Requirement 2
+- ⚠️ Requirement 3 (partial)
 
-Implemented Features:
-- ✅ Feature 1
-- ✅ Feature 2
-- ⚠️ Feature 3 (partial)
-- ❌ Feature 4 (missing)
-
-### Code Quality Assessment
+## Code Quality Assessment
 
 **Strengths**:
 - [Strength 1]
 - [Strength 2]
 
 **Areas for Improvement**:
-- [Area 1]: [Recommendation]
-- [Area 2]: [Recommendation]
+- [Area 1]: [Specific recommendation]
+- [Area 2]: [Specific recommendation]
 
-### Risk Assessment
+## Risk Assessment
 
-**Critical Risks** (Must fix before production):
-- [Risk 1]: [Impact and solution]
+**Critical Risks**:
+- [Risk]: [Impact] [Solution]
 
-**Important Risks** (Should fix):
-- [Risk 1]: [Recommendation]
+**Important Risks**:
+- [Risk]: [Recommendation]
 
-**Minor Issues** (Nice to improve):
-- [Issue 1]: [Suggestion]
+**Minor Issues**:
+- [Issue]: [Suggestion]
 
 ## Security Analysis
 
@@ -193,22 +188,16 @@ Implemented Features:
 - Error handling: ✅ / ⚠️ / ❌
 - No hardcoded secrets: ✅ / ❌
 
-## Recommendations
+## Recommendations (Prioritized)
 
-### Before Production
-1. [Critical recommendation]
+1. [Critical action item]
+2. [Important action item]
+3. [Enhancement suggestion]
 
-### Before Next Version
-1. [Important recommendation]
+## Final Assessment
 
-### Future Enhancement
-1. [Optional improvement]
-
-## Conclusion
-
-**Overall Assessment**: [Summary]
-
-**Ready for Claude integration**: YES / NO
+**Overall**: [Summary of code quality]
+**Ready for Production**: YES / NO
 EOF
 ```
 
@@ -218,26 +207,24 @@ EOF
 cat > results/gemini/EXECUTION_LOG.md << 'EOF'
 # Execution Log - Gemini CLI
 
-## Task: [from CURRENT_TASK.md]
+**Task**: [from CURRENT_TASK.md]
 **Date**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
 **Status**: SUCCESS
 
-### Input Processing
-- CURRENT_TASK.md read: ✅
-- Codex outputs reviewed: ✅
+## Analysis Summary
 
-### Analysis Summary
-- Specifications checked: 100%
+- Specification reviewed: ✅
+- Codex output analyzed: ✅
 - Risks identified: [Number]
 - Recommendations provided: [Number]
 
-### Output Files
-- results/gemini/RESULT.md (easy reading)
-- results/gemini/ANALYSIS.md (detailed analysis)
-- results/gemini/EXECUTION_LOG.md (this file)
+## Files Generated
+- results/gemini/RESULT.md - Summary
+- results/gemini/ANALYSIS.md - Detailed findings
+- results/gemini/EXECUTION_LOG.md - Technical log
 
-### Next Steps
-→ Claude Code for integration review
+## Next Steps
+→ Claude Code will validate and integrate all findings
 EOF
 ```
 
@@ -249,70 +236,64 @@ cat >> changelog.md << 'EOF'
 ## [$(date +%Y-%m-%d)] - Gemini CLI
 
 **Task**: [from CURRENT_TASK.md]
-
-**Changes**:
-- Analyzed Codex implementation
-- Identified [N] risks
-- Provided [N] recommendations
-
-**Files Modified**:
-- results/gemini/RESULT.md (NEW - Human-readable summary)
-- results/gemini/ANALYSIS.md (NEW - Detailed analysis)
-- results/gemini/EXECUTION_LOG.md (NEW - Technical log)
-
 **Status**: COMPLETE
+
+**Analysis**:
+- Risks identified: [Number]
+- Recommendations: [Number]
+- Compliance: [Percentage]%
 
 **📖 View Result**: `results/gemini/RESULT.md`
 
-**Next Agent**: Claude Code
-
-**Key Findings**:
-- [Finding 1]
-- [Finding 2]
+**Next Agent**: Claude Code (Validation)
 EOF
 ```
 
-### Step 11: Git Commit and Push
+### Step 11: Git Commit & Push
 
 ```bash
 cd ~/virtual-company
 
 git add results/gemini/*
 git add changelog.md
-git commit -m "Gemini: [Task ID] - Analysis complete
 
-Reviewed Codex implementation and provided analysis.
-📖 View result: results/gemini/RESULT.md"
+git commit -m "Gemini: [Task ID] - Code analysis complete
+
+Reviewed Codex implementation and identified [N] findings.
+See results/gemini/RESULT.md for summary."
 
 git push origin main
 ```
 
----
-
-## Success Criteria
-
-✅ Task specification understood  
-✅ Codex output thoroughly reviewed  
-✅ **RESULT.md created (easy reading for human)**  
-✅ ANALYSIS.md comprehensive and detailed  
-✅ All risks identified and categorized  
-✅ Recommendations are actionable  
-✅ EXECUTION_LOG.md complete  
-✅ changelog.md updated  
-✅ Files committed and pushed  
-✅ Claude Code can proceed  
+**Verify the push was successful.**
 
 ---
 
-## Quality Standards
+## ✅ Success Criteria
 
-- Evidence-based conclusions
-- Specific recommendations (not vague)
-- Risk severity clearly marked
-- No false positives
-- Professional tone
+- [ ] CURRENT_TASK.md understood
+- [ ] Codex RESULT.md read
+- [ ] Codex code reviewed
+- [ ] Specification compliance verified
+- [ ] Risks identified
+- [ ] RESULT.md created (human-readable)
+- [ ] ANALYSIS.md created (detailed)
+- [ ] EXECUTION_LOG.md created
+- [ ] changelog.md updated
+- [ ] git push successful
+- [ ] Ready for Claude to validate
 
 ---
 
-**Last Updated**: 2025-01-30  
-**Version**: 1.1 (Added RESULT.md for easy reading)
+## 📖 Remember
+
+This is part of a larger system. See **Agents.md** for:
+- Complete workflow
+- How Claude uses your output
+- How Genspark works
+- The full automation pattern
+
+---
+
+**Last Updated**: 2025-01-30
+**Version**: 2.0 (Read Agents.md First)
