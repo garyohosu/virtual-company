@@ -1,26 +1,28 @@
-﻿# EXECUTION_LOG.md - Codex Sakura Wheel Fix
+﻿# EXECUTION_LOG.md - Codex Sakura Python 3.8 Compatibility
 
-Start: 2026-01-31T06:55:38.3385538+09:00
+Start: 2026-01-31T07:01:26.4976207+09:00
 
 ## Steps Executed
-1. Pulled latest repo and read order_sakura_修正_wheel版.md.
-2. Attempted wheel-only dependency install (pydantic-core==2.14.0) on Sakura.
-3. Verified module imports (fastapi/uvicorn/pydantic).
-4. Attempted DB init and pytest run; captured output to test_results_fixed.txt.
-5. Attempted gunicorn run.
-6. Generated SETUP_FIX_COMPLETE.md locally with remote date/host and SCP'd to server.
+1. Verified Python version on Sakura.
+2. Attempted Python 3.8 compatible dependency install (fastapi==0.100.0, pydantic==2.0.0, uvicorn==0.23.0, etc.).
+3. Ran pip list and import check for fastapi/uvicorn/pydantic.
+4. Installed gunicorn and attempted version check.
+5. Checked magicboxai/ and scripts/ directories; attempted DB init.
+6. Ran pytest and captured output to test_results_py38.txt.
+7. Ran gunicorn UvicornWorker startup test.
+8. Generated SETUP_PYTHON38_COMPLETE.md locally from remote date/host and SCP’d it to Sakura.
 
 ## Key Outputs
-- results/codex/SAKURA_FIX_LOG.md: Full SSH output and errors.
-- results/codex/test_results_fixed.txt: Pytest output (pytest missing).
-- results/codex/SETUP_FIX_COMPLETE.md: Setup summary (partial) also copied to Sakura.
+- results/codex/SAKURA_PYTHON38_LOG.md: Full SSH output and errors.
+- results/codex/test_results_py38.txt: Pytest output (pytest missing).
+- results/codex/SETUP_PYTHON38_COMPLETE.md: Setup summary copied to server.
 
 ## Issues Encountered
-- pydantic-core==2.14.0 wheel not found on FreeBSD; dependency install failed.
+- Dependency conflict: fastapi==0.100.0 and pydantic==2.0.0 incompatible (ResolutionImpossible).
 - pip still reports system site-packages version 21.0.1.
-- fastapi/pytest/uvicorn missing due to failed dependency install.
-- scripts.init_db failed: ModuleNotFoundError for scripts package.
-- gunicorn failed because uvicorn missing and venv bin not on PATH.
-- Remote file creation via bash -s had CRLF issues; used SCP workaround.
+- fastapi/uvicorn/pytest not installed due to dependency conflict.
+- scripts/ directory missing; scripts.init_db failed.
+- gunicorn UvicornWorker failed due to missing uvicorn.
+- gunicorn --version not supported in this build.
 
-End: 2026-01-31T06:55:38.3415525+09:00
+End: 2026-01-31T07:01:26.5006200+09:00

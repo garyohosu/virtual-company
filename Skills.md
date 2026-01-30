@@ -106,6 +106,14 @@ If NO:
 **Details**: 竊・skills/errors/007.md
 
 ---
+### Error Pattern 008: pip dependency conflict (ResolutionImpossible)
+
+**What**: ERROR: ResolutionImpossible when installing pinned packages
+
+**Quick Fix**: Adjust pins to compatible versions and re-run pip  
+**Details**: 竊・skills/errors/008.md
+
+---
 ## 笞・・Adding New Skills
 
 When you (any agent) encounter a NEW error:
@@ -209,5 +217,6 @@ virtual-company/
 **Last Updated**: 2025-01-30  
 **Version**: 1.0  
 **Status**: Ready for first task
+
 
 
