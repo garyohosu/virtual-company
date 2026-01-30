@@ -9,9 +9,11 @@ Usage:
 from __future__ import annotations
 
 import argparse
+import json
 import re
 import subprocess
 import sys
+import time
 import traceback
 from dataclasses import dataclass
 from datetime import datetime
@@ -28,7 +30,12 @@ META_KEYS = {
 }
 
 ERROR_LOG_RELATIVE = Path("results") / "codex" / "error.log"
+AUDIT_LOG_RELATIVE = Path("results") / "codex" / "audit.log"
+RATE_LIMIT_RELATIVE = Path("results") / "codex" / "rate_limit.json"
 ALLOWED_ACTOR_PATTERN = re.compile(r"^[A-Za-z0-9_-]+$")
+ALLOWED_ORDER_EXTENSIONS = {".md"}
+MAX_ORDER_SIZE_BYTES = 512 * 1024
+RATE_LIMIT_SECONDS = 60
 
 
 @dataclass
@@ -90,6 +97,18 @@ def _log_error(repo_root: Path, message: str, exc: BaseException | None = None) 
             handle.write("\n")
 
 
+def _write_audit_log(repo_root: Path, event: str, details: dict[str, str]) -> None:
+    log_path = repo_root / AUDIT_LOG_RELATIVE
+    log_path.parent.mkdir(parents=True, exist_ok=True)
+    payload = {
+        "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+        "event": event,
+        **details,
+    }
+    with log_path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(payload, ensure_ascii=False) + "\n")
+
+
 def _validate_actor_name(actor: str, field_label: str) -> None:
     if not actor:
         raise ValueError(f"{field_label} cannot be empty.")
@@ -97,6 +116,47 @@ def _validate_actor_name(actor: str, field_label: str) -> None:
         raise ValueError(
             f"{field_label} '{actor}' must match pattern {ALLOWED_ACTOR_PATTERN.pattern}."
         )
+
+
+def _validate_order_path(repo_root: Path, order_path: Path) -> Path:
+    resolved = order_path.resolve()
+    try:
+        resolved.relative_to(repo_root)
+    except ValueError as exc:
+        raise ValueError("Order file must be inside the repository.") from exc
+    if resolved.suffix.lower() not in ALLOWED_ORDER_EXTENSIONS:
+        raise ValueError(
+            f"Order file extension must be one of {sorted(ALLOWED_ORDER_EXTENSIONS)}."
+        )
+    if not resolved.exists():
+        raise FileNotFoundError(f"Order file not found: {resolved}")
+    size = resolved.stat().st_size
+    if size == 0:
+        raise ValueError("Order file is empty.")
+    if size > MAX_ORDER_SIZE_BYTES:
+        raise ValueError("Order file exceeds maximum size.")
+    return resolved
+
+
+def _enforce_rate_limit(
+    repo_root: Path, actor: str, now_ts: float | None = None
+) -> None:
+    if now_ts is None:
+        now_ts = time.time()
+    rate_path = repo_root / RATE_LIMIT_RELATIVE
+    rate_path.parent.mkdir(parents=True, exist_ok=True)
+    data: dict[str, float] = {}
+    if rate_path.exists():
+        try:
+            data = json.loads(rate_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError:
+            data = {}
+    last_ts = data.get(actor)
+    if last_ts and now_ts - last_ts < RATE_LIMIT_SECONDS:
+        remaining = int(RATE_LIMIT_SECONDS - (now_ts - last_ts))
+        raise RuntimeError(f"Rate limit hit for {actor}. Try again in {remaining}s.")
+    data[actor] = now_ts
+    rate_path.write_text(json.dumps(data, indent=2), encoding="utf-8")
 
 
 def _load_employee_context(repo_root: Path, actor: str) -> EmployeeContext:
@@ -213,21 +273,32 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Kick System CLI")
     parser.add_argument("--kick", required=True, help="Path to order.md")
     parser.add_argument("--no-git", action="store_true", help="Skip git commit/push")
+    parser.add_argument(
+        "--no-rate-limit", action="store_true", help="Skip rate limiting checks"
+    )
     args = parser.parse_args()
 
     repo_root = Path(__file__).resolve().parent
     try:
         order_path = Path(args.kick)
         if not order_path.is_absolute():
-            order_path = (repo_root / order_path).resolve()
-        if not order_path.exists():
-            raise FileNotFoundError(f"Order file not found: {order_path}")
+            order_path = repo_root / order_path
+        order_path = _validate_order_path(repo_root, order_path)
 
         order_text = order_path.read_text(encoding="utf-8")
         current_actor = _extract_field(order_text, "Current Actor")
         next_actor = _extract_field(order_text, "Next Actor")
         _validate_actor_name(current_actor, "Current Actor")
         _validate_actor_name(next_actor, "Next Actor")
+
+        if not args.no_rate_limit:
+            _enforce_rate_limit(repo_root, current_actor)
+
+        _write_audit_log(
+            repo_root,
+            "KICK_STARTED",
+            {"current_actor": current_actor, "next_actor": next_actor, "order": str(order_path)},
+        )
         instructions = _extract_instructions(order_text)
 
         context = _load_employee_context(repo_root, current_actor)
@@ -252,12 +323,33 @@ def main() -> int:
         timestamp = datetime.now().strftime("%Y-%m-%d %H:%M")
         updated = _update_order_content(order_text, current_actor, next_actor, timestamp)
         order_path.write_text(updated, encoding="utf-8")
+        _write_audit_log(
+            repo_root,
+            "ORDER_UPDATED",
+            {"current_actor": current_actor, "next_actor": next_actor, "order": str(order_path)},
+        )
 
         if not args.no_git:
             _run_git(repo_root, current_actor)
+            _write_audit_log(
+                repo_root,
+                "GIT_PUSHED",
+                {"current_actor": current_actor},
+            )
+        else:
+            _write_audit_log(
+                repo_root,
+                "GIT_SKIPPED",
+                {"current_actor": current_actor},
+            )
 
         return 0
     except Exception as exc:
+        _write_audit_log(
+            repo_root,
+            "KICK_FAILED",
+            {"error": str(exc)},
+        )
         _log_error(repo_root, "Kick system failed.", exc)
         print(
             "ERROR: Kick system failed. See results/codex/error.log for details.",

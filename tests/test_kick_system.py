@@ -74,3 +74,24 @@ def test_validate_actor_name():
     kick_system._validate_actor_name("engineering_bob", "Current Actor")
     with pytest.raises(ValueError):
         kick_system._validate_actor_name("bad name", "Current Actor")
+
+
+def test_validate_order_path(tmp_path):
+    repo_root = tmp_path
+    order_path = repo_root / "order.md"
+    order_path.write_text("**Current Actor**: alice\n**Next Actor**: bob\n", encoding="utf-8")
+
+    resolved = kick_system._validate_order_path(repo_root, order_path)
+    assert resolved == order_path
+
+    bad_path = repo_root / "order.txt"
+    bad_path.write_text("content", encoding="utf-8")
+    with pytest.raises(ValueError):
+        kick_system._validate_order_path(repo_root, bad_path)
+
+
+def test_enforce_rate_limit(tmp_path):
+    repo_root = tmp_path
+    kick_system._enforce_rate_limit(repo_root, "alice", now_ts=1000.0)
+    with pytest.raises(RuntimeError):
+        kick_system._enforce_rate_limit(repo_root, "alice", now_ts=1000.0 + 10)
