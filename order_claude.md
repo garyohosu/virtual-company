@@ -1,92 +1,130 @@
 # Order for Claude Code - Virtual Company
 
-This file is read and executed by Claude Code.
+## 🔴 BEFORE YOU START: READ AGENTS.MD FIRST
 
-## Your Role: VP of Engineering & Orchestrator
+**This is CRITICAL**: Before executing this file, read:
 
-You are responsible for:
-1. Validating all agent outputs
-2. Making integration decisions
-3. Orchestrating via MCP if needed
-4. Approving or requesting revisions
+👉 **https://raw.githubusercontent.com/garyohosu/virtual-company/main/Agents.md**
+
+Agents.md contains:
+- Your role as Claude agent (Orchestrator & Validator)
+- Universal workflow for all agents
+- How to output RESULT.md
+- How to commit and push
+- Everything you need to understand the framework
+
+**After reading Agents.md, come back here and execute the steps below.**
 
 ---
 
-## Execution Flow
+# Claude Code Specific Instructions
 
-### Step 1: SSH Login to Sakura Server
+## Your Role (From Agents.md)
+
+You are the **Orchestrator & Validator** (VP of Engineering). Your job:
+1. Read what Codex and Gemini produced
+2. Validate code quality
+3. Validate analysis quality
+4. Make integration decision: APPROVED / APPROVED WITH NOTES / NEEDS REVISION
+5. Output RESULT.md (human-readable) + INTEGRATION_SUMMARY.md
+
+---
+
+## Step-by-Step Execution
+
+### Step 1: git pull
 
 ```bash
-ssh garyo@garyo.sakura.ne.jp
 cd ~/virtual-company
 git pull origin main
 ```
 
-### Step 2: Read Task and Review All Outputs
+### Step 2: Configure Git (First Time Only)
+
+```bash
+git config user.name "Claude Code"
+git config user.email "claude@virtualcompany.local"
+```
+
+### Step 3: Read the Original Specification
 
 ```bash
 cat tasks/CURRENT_TASK.md
+```
+
+### Step 4: Read Codex's Summary
+
+```bash
 cat results/codex/RESULT.md
+```
+
+### Step 5: Read Gemini's Summary
+
+```bash
 cat results/gemini/RESULT.md
+```
+
+### Step 6: Review Technical Details (if needed)
+
+```bash
+# Review Codex's execution log
 cat results/codex/EXECUTION_LOG.md
+
+# Review Gemini's detailed analysis
 cat results/gemini/ANALYSIS.md
 ```
 
-### Step 3: Validate Codex Output
+### Step 7: Validate Codex Output
 
-Code Quality Checklist:
-- [ ] Syntax is correct
-- [ ] Follows naming conventions
-- [ ] Has proper error handling
-- [ ] Is well-documented
-- [ ] No security issues
-- [ ] Performance is acceptable
-- [ ] Meets all specifications
+Check:
+- ✅ Code matches specification
+- ✅ Error handling present
+- ✅ Input validation present
+- ✅ Documentation complete
+- ✅ No security issues
+- ✅ Performance acceptable
 
-### Step 4: Validate Gemini Output
+### Step 8: Validate Gemini Output
 
-Analysis Quality Checklist:
-- [ ] Conclusions are evidence-based
-- [ ] Risks are accurately identified
-- [ ] Recommendations are actionable
-- [ ] Nothing is overlooked
-- [ ] Professional tone
+Check:
+- ✅ Analysis is thorough
+- ✅ Risks are accurately identified
+- ✅ Recommendations are actionable
+- ✅ Nothing is overlooked
+- ✅ Professional quality
 
-### Step 5: Create RESULT.md (For Easy Reading)
-
-**⭐ This is what the user will read**
+### Step 9: Create RESULT.md
 
 ```bash
 mkdir -p results/claude
 
 cat > results/claude/RESULT.md << 'EOF'
-# ✅ Claude Execution Result
+# ✅ Claude Code Validation Result
 
-**Task**: [Task Name from CURRENT_TASK.md]  
-**Date**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")  
+**Task**: [Task Name from CURRENT_TASK.md]
+**Date**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
 **Status**: ✅ VALIDATION COMPLETE
 
 ## Summary
 
-Reviewed and validated all agent outputs. Code quality and analysis both verified.
+Reviewed and validated all outputs. Code quality and analysis both verified.
 
 ## Validation Results
 
-### Code Quality (Codex)
+### Codex Code Quality
 - ✅ Syntax correct
-- ✅ Naming conventions followed
+- ✅ Specification met: [Percentage]%
 - ✅ Error handling present
 - ✅ Documentation complete
-- ✅ No security issues
-- ✅ Performance acceptable
-- ✅ Meets all specifications
+- ✅ Standards followed
+- **Status**: APPROVED / APPROVED WITH NOTES / NEEDS REVISION
 
-### Analysis Quality (Gemini)
-- ✅ Evidence-based conclusions
+### Gemini Analysis Quality
+- ✅ Comprehensive
+- ✅ Evidence-based
 - ✅ Risks accurately identified
 - ✅ Recommendations actionable
-- ✅ Complete assessment
-- ✅ Professional quality
+- **Status**: APPROVED
 
 ## Integration Decision
 
@@ -94,75 +132,65 @@ Reviewed and validated all agent outputs. Code quality and analysis both verifie
 
 [Brief explanation of decision]
 
-## Quality Checklist
-
-- ✅ All requirements met
-- ✅ Code quality verified
-- ✅ Analysis quality verified
-- ✅ Ready for QA testing
-- ✅ Ready for production
-
 ## Issues (if any)
 
 - [Issue 1]: [Recommendation]
 - [Issue 2]: [Recommendation]
 
+## Confidence Level
+
+Quality: [High / Medium / Low]
+Readiness: [High / Medium / Low]
+
 ## Next Steps
 
-👉 **Genspark** will now perform final QA testing and validation
-
-## Output Files
-
-- 📄 `results/claude/RESULT.md` - This summary (easy reading)
-- 📄 `results/claude/INTEGRATION_SUMMARY.md` - Detailed validation
-- 📄 `results/claude/EXECUTION_LOG.md` - Technical log
+👉 **Genspark** will now perform final QA testing.
 
 ---
-
-**Generated by**: Claude Code  
-**Role**: VP of Engineering (Validator)  
-**Next Agent**: Genspark (Final QA)  
+**Generated by**: Claude Code
+**Role**: VP of Engineering (Validator)
+**View Next Step**: See results/genspark/RESULT.md after Genspark runs
 **Repository**: https://github.com/garyohosu/virtual-company
 EOF
 ```
 
-### Step 6: Create INTEGRATION_SUMMARY.md
+### Step 10: Create INTEGRATION_SUMMARY.md
 
 ```bash
 cat > results/claude/INTEGRATION_SUMMARY.md << 'EOF'
-# Integration Summary - Claude Code
+# Integration Validation Summary - Claude Code
 
-## Overall Assessment
-
-### Executive Summary
-[1-2 sentences on what was accomplished]
-
-### Quality Metrics
-- Code Quality: Excellent / Good / Acceptable / Poor
-- Analysis Quality: Excellent / Good / Acceptable / Poor
-- Specification Compliance: [Percentage]%
+**Task**: [from CURRENT_TASK.md]
+**Date**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+**Status**: VALIDATION_COMPLETE
 
 ## Codex Code Review
 
-### Assessment
-[Your evaluation]
+**Quality Assessment**: [Excellent / Good / Acceptable / Poor]
 
-### Strengths
-- [Strength 1]
-- [Strength 2]
+**Specification Compliance**: [Percentage]%
 
-### Issues Found
-- [Issue 1] → Recommendation
-- [Issue 2] → Recommendation
+**Code Quality Checklist**:
+- [ ] Syntax is correct
+- [ ] Naming conventions followed
+- [ ] Error handling present
+- [ ] Input validation present
+- [ ] Well-documented
+- [ ] No security issues
+- [ ] Performance acceptable
+
+**Issues Found**:
+- [Issue 1] → [Recommendation]
+- [Issue 2] → [Recommendation]
 
 ## Gemini Analysis Review
 
-### Assessment
-[Your evaluation]
+**Analysis Quality**: [Excellent / Good / Acceptable / Poor]
 
-### Validation
+**Review**:
 - Risk identification: Accurate / Partial / Missed items
 - Recommendations: Actionable / Needs refinement
+- Completeness: [Assessment]
 
 ## Final Decision
 
@@ -170,45 +198,43 @@ cat > results/claude/INTEGRATION_SUMMARY.md << 'EOF'
 
 **Confidence Level**: High / Medium / Low
 
-**Date**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
+**Ready for Genspark QA**: YES / NO
 
-### Before Genspark QA
-- [ ] Issue 1 must be resolved
-- [ ] Issue 2 should be addressed
-- [ ] All critical items cleared
-
+**Notes**:
+- [Key finding]
+- [Recommendation]
 EOF
 ```
 
-### Step 7: Create EXECUTION_LOG.md
+### Step 11: Create EXECUTION_LOG.md
 
 ```bash
 cat > results/claude/EXECUTION_LOG.md << 'EOF'
 # Execution Log - Claude Code
 
-## Task: [from CURRENT_TASK.md]
+**Task**: [from CURRENT_TASK.md]
 **Date**: $(date -u +"%Y-%m-%dT%H:%M:%SZ")
 **Status**: VALIDATION_COMPLETE
 
-### Validation Results
+## Validation Results
 - Codex output: ✅ Reviewed
 - Gemini output: ✅ Reviewed
 - Specification compliance: [Percentage]%
 
-### Decision
-APPROVED / NEEDS_REVISION
+## Decision
+APPROVED / APPROVED WITH NOTES / NEEDS_REVISION
 
-### Output Files
-- results/claude/RESULT.md (easy reading)
-- results/claude/INTEGRATION_SUMMARY.md (detailed validation)
-- results/claude/EXECUTION_LOG.md (this file)
+## Files Generated
+- results/claude/RESULT.md - Summary
+- results/claude/INTEGRATION_SUMMARY.md - Detailed validation
+- results/claude/EXECUTION_LOG.md - Technical log
 
-### Next Steps
+## Next Steps
 → Genspark for final QA and testing
 EOF
 ```
 
-### Step 8: Update changelog.md
+### Step 12: Update changelog.md
 
 ```bash
 cat >> changelog.md << 'EOF'
@@ -216,64 +242,89 @@ cat >> changelog.md << 'EOF'
 ## [$(date +%Y-%m-%d)] - Claude Code
 
 **Task**: [from CURRENT_TASK.md]
-
-**Validation Results**:
-- Code quality: [Assessment]
-- Analysis quality: [Assessment]
-- Compliance: [Percentage]%
+**Status**: VALIDATION COMPLETE
 
 **Decision**: APPROVED / APPROVED WITH NOTES / NEEDS_REVISION
 
+**Code Quality**: [Assessment]
+**Analysis Quality**: [Assessment]
+**Compliance**: [Percentage]%
+
 **📖 View Result**: `results/claude/RESULT.md`
 
-**Next Agent**: Genspark
+**Next Agent**: Genspark (Final QA)
 
-**Notes**:
-- [Key decision point]
-- [Confidence level]
+**Issues**: [Count or "None"]
 EOF
 ```
 
-### Step 9: Git Commit and Push
+### Step 13: Git Commit & Push
 
 ```bash
 cd ~/virtual-company
 
 git add results/claude/*
 git add changelog.md
-git commit -m "Claude: [Task ID] - Integration validation complete
 
-Reviewed and validated all agent outputs.
-📖 View result: results/claude/RESULT.md"
+git commit -m "Claude: [Task ID] - Validation complete
+
+Validated all outputs from Codex and Gemini.
+Decision: APPROVED / APPROVED WITH NOTES / NEEDS_REVISION
+See results/claude/RESULT.md for summary."
 
 git push origin main
 ```
 
+**Verify the push was successful.**
+
 ---
 
-## Success Criteria
+## ✅ Success Criteria
 
-✅ All outputs reviewed and validated  
-✅ Quality standards verified  
-✅ **RESULT.md created (easy reading for human)**  
-✅ INTEGRATION_SUMMARY.md created  
-✅ Clear approval or revision decision  
-✅ EXECUTION_LOG.md complete  
-✅ changelog.md updated  
-✅ Files committed and pushed  
-✅ Genspark can proceed  
+- [ ] CURRENT_TASK.md understood
+- [ ] Codex RESULT.md read
+- [ ] Gemini RESULT.md read
+- [ ] Code quality validated
+- [ ] Analysis quality validated
+- [ ] Decision made (APPROVED / APPROVED WITH NOTES / NEEDS REVISION)
+- [ ] RESULT.md created (human-readable)
+- [ ] INTEGRATION_SUMMARY.md created
+- [ ] EXECUTION_LOG.md created
+- [ ] changelog.md updated
+- [ ] git push successful
+- [ ] Ready for Genspark to test
 
 ---
 
 ## Decision Framework
 
-**APPROVED**: All requirements met, quality excellent, no issues
+**APPROVED**: 
+- Code meets all requirements
+- Quality is excellent
+- No issues found
+- Ready for production
 
-**APPROVED WITH NOTES**: Requirements met, minor issues noted, proceed to Genspark
+**APPROVED WITH NOTES**:
+- Code meets requirements
+- Quality is good
+- Minor issues noted
+- Can proceed to Genspark
 
-**NEEDS REVISION**: Issues found that must be fixed before Genspark
+**NEEDS REVISION**:
+- Issues found that block approval
+- Send back to Codex/Gemini
+- Don't proceed to Genspark yet
 
 ---
 
-**Last Updated**: 2025-01-30  
-**Version**: 1.1 (Added RESULT.md for easy reading)
+## 📖 Remember
+
+This is part of a larger system. See **Agents.md** for:
+- Complete workflow
+- How Genspark uses your output
+- The full automation pattern
+
+---
+
+**Last Updated**: 2025-01-30
+**Version**: 2.0 (Read Agents.md First)
