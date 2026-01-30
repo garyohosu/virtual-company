@@ -1,473 +1,629 @@
-# Virtual Company - Kick System Edition
+# Kick System - シンプルな実行エンジン
 
-**You Kick. System Runs. Forever.**
+## 🎯 You Kick, System Runs
+
+```
+User (You):
+  $ codex --kick order.md
+
+Codex:
+  ✅ order.md を読む
+  ✅ 「今から誰が実行するか」を判定
+  ✅ 該当する社員を起動
+  ✅ 指示を実行
+  ✅ 次実行者を指定
+  ✅ 完了
+
+Next Kick:
+  $ codex --kick order.md  (自動で次の人が実行)
+```
 
 ---
 
-## ⚡ Quick Start
+## 📋 order.md フォーマット
+
+### シンプルな指示書
+
+```markdown
+# Order - 実行指示書
+
+**Status**: ⏳ Waiting for sales
+**Current Actor**: sales_alice
+**Next Actor**: engineering_bob
+
+---
+
+## 📌 指示
+
+営業チームが顧客から受け取った仕様を、
+技術チームに引き渡す。
+
+### Sales Task (営業)
+- [ ] 顧客との打ち合わせ完了
+- [ ] 仕様書を受け取る
+- [ ] Requirements.md に纏める
+
+### Engineering Task (技術)
+- [ ] 仕様書を確認
+- [ ] 実装計画を立案
+- [ ] リスク評価
+
+### QA Task (品質保証)
+- [ ] テスト計画を立案
+- [ ] テストケース作成
+
+---
+
+## 🔄 Execution Pipeline
+
+1️⃣ **Sales** (営業_Alice)
+   └─ 顧客仕様を整理
+   └─ Requirements.md に記録
+   └─ Next: engineering_bob
+
+2️⃣ **Engineering** (技術_Bob)
+   └─ 仕様確認・設計
+   └─ Implementation_plan.md に記録
+   └─ Next: qa_charlie
+
+3️⃣ **QA** (品質保証_Charlie)
+   └─ テスト計画作成
+   └─ Test_plan.md に記録
+   └─ Next: Done
+
+---
+
+## 📊 Current Status
+
+✅ Sales_Alice: 完了 (2025-01-30 10:00)
+⏳ Engineering_Bob: 実行中 (2025-01-30 10:30 start)
+⏹️ QA_Charlie: 待機中
+```
+
+### 実行フロー
+
+```markdown
+**Status**: ⏳ Waiting for engineering
+**Current Actor**: engineering_bob
+**Next Actor**: qa_charlie
+
+---
+
+(中身は指示)
+```
+
+---
+
+## 🚀 CLI の使い方
+
+### 1️⃣ キックする（あなたがやること）
 
 ```bash
-# That's it. Just kick.
 $ codex --kick order.md
 
-# System automatically:
-# 1. Reads order.md
-# 2. Finds Current Actor: sales_alice
-# 3. Launches Sales_Alice (with full context)
-# 4. Executes instructions
-# 5. Updates order.md: Next Actor becomes Current
-# 6. Git push
-# 
-# Next kick: engineering_bob auto-starts
+📖 Reading: order.md
+🔍 Finding current actor...
+  → Current: engineering_bob
+  → Next: qa_charlie
+
+🚀 Starting execution...
 ```
 
----
+### 2️⃣ Codex が自動的にやること
 
-## 🎯 Three Simple Rules
+```
+1. order.md を読む
+2. **Current Actor** を判定
+3. 該当社員を起動
+   Employees/engineering_bob/ を読み込み
+   - WhoAmI.md
+   - これまでやっていたこと.md
+   - Skills.md
+   - order.md
+4. 指示を実行
+5. 完了時、**Next Actor** を更新
+6. result.md に出力
+7. order.md の Status を更新
+8. Git push
+```
 
-### Rule 1: You Kick
+### 3️⃣ 次のキック
+
 ```bash
 $ codex --kick order.md
+
+📖 Reading: order.md
+🔍 Finding current actor...
+  → Current: qa_charlie (自動で次の人になっている)
+  → Next: (QA完了で None)
+
+🚀 Starting execution...
 ```
 
-### Rule 2: Managers Manage
+---
+
+## 🧑‍💼 管理職機能
+
+### 管理職がやる2つのこと
+
+#### 1️⃣ 部下の WhoAmI を編集
+
 ```bash
-# Edit employee's role
-vim Employees/sales_alice/WhoAmI.md
-git add & push
+# 営業部長が Alice の役割を変更
+$ vim Employees/sales_alice/WhoAmI.md
 
-# Create new employee
-mkdir -p Employees/manufacturing_dave/Mail/inbox
-# Add WhoAmI.md
-git add & push
+# Before
+**Name**: Alice
+**Role**: Sales Manager
+**Department**: Sales
 
-# Create new workflow
-cat > order_new_product.md
-git add & push
+# After
+**Name**: Alice
+**Role**: Senior Sales Manager  ← 昇進！
+**Department**: Sales
+**Team**: Senior Sales Team
+
+$ git add & push
 ```
 
-### Rule 3: System Learns
-```
-Every execution:
-✅ Updates Memory.md
-✅ Learns from Skills.md
-✅ Records in Git
-✅ Auto-commits
+#### 2️⃣ 新しい部下を追加（フォルダ作成）
 
-Next kick: System smarter
+```bash
+# 製造部門を追加
+$ mkdir -p Employees/manufacturing_dave/Mail/inbox
+
+# 新しい社員の WhoAmI を作成
+$ cat > Employees/manufacturing_dave/WhoAmI.md << 'EOF'
+# WhoAmI
+
+**Name**: Dave
+**Role**: Manufacturing Manager
+**Department**: Manufacturing
+**Manager**: Director_Manufacturing
+
+## Responsibilities
+- Production planning
+- Quality control
+- Equipment maintenance
+
+## Team
+None yet (新規)
+
+---
+
+**Status**: Active
+EOF
+
+# これで自動的に Dave が部下になる
+# order.md で "manufacturing_dave" を指定するだけで実行される
+$ git add & push
 ```
 
 ---
 
-## 📊 System Architecture
-
-```
-┌─────────────────────────────────────────┐
-│          Kick System                    │
-│      (You: codex --kick order.md)       │
-├─────────────────────────────────────────┤
-│                                         │
-│  1. Parse order.md                      │
-│     ├─ Current Actor: sales_alice       │
-│     └─ Next Actor: engineering_bob      │
-│                                         │
-│  2. Launch Employee Context             │
-│     ├─ WhoAmI.md (who am I?)           │
-│     ├─ Memory.md (what did I do?)      │
-│     ├─ Skills.md (prevent failures)    │
-│     └─ Mail/inbox/ (any messages?)     │
-│                                         │
-│  3. Execute Instructions                │
-│     └─ sales_alice does sales tasks    │
-│                                         │
-│  4. Update State                        │
-│     ├─ result.md (what I did)          │
-│     ├─ Memory.md (update progress)     │
-│     ├─ Skills.md (new patterns)        │
-│     └─ order.md (next actor)           │
-│                                         │
-│  5. Git Push                            │
-│     └─ All changes recorded            │
-│                                         │
-└─────────────────────────────────────────┘
-```
-
----
-
-## 👥 Company Structure
+## 👥 会社の構成例
 
 ```
 Employees/
-├── sales_alice/           ← Sales Team
-├── sales_bob/
-├── engineering_charlie/   ← Engineering Team
-├── engineering_dave/
-├── manufacturing_eve/     ← Manufacturing Team
-├── manufacturing_frank/
-├── qa_grace/              ← QA Team
-├── qa_henry/
-├── hr_iris/               ← HR Team
-└── manager_jack/          ← Management
-```
-
-Each is just a **folder**. Each folder has:
-```
-[department_name]/
-├── WhoAmI.md              # Who they are
-├── Memory.md              # What they did
-├── Skills.md              # What they learned
-├── Mail/inbox/            # Messages
-└── result.md              # What they output
+├── sales_alice/           # 営業
+│   ├── WhoAmI.md
+│   ├── これまでやっていたこと.md
+│   ├── Skills.md
+│   └── Mail/
+│
+├── sales_bob/             # 営業
+│   ├── WhoAmI.md
+│   └── ...
+│
+├── engineering_charlie/   # 技術
+│   ├── WhoAmI.md
+│   └── ...
+│
+├── engineering_dave/      # 技術
+│   ├── WhoAmI.md
+│   └── ...
+│
+├── manufacturing_eve/     # 製造
+│   ├── WhoAmI.md
+│   └── ...
+│
+├── qa_frank/              # 品質保証
+│   ├── WhoAmI.md
+│   └── ...
+│
+├── hr_grace/              # 総務
+│   ├── WhoAmI.md
+│   └── ...
+│
+└── manager_helen/         # 管理職
+    ├── WhoAmI.md
+    └── (部下の WhoAmI を編集権限)
 ```
 
 ---
 
-## 🔄 Example Workflow: Sales → Engineering
+## 📋 WhoAmI.md の部門別テンプレート
 
-### Step 1: Initial State
-
-```
-order.md:
-  Current Actor: sales_alice
-  Next Actor: engineering_bob
-```
-
-### Step 2: You Kick
-
-```bash
-$ codex --kick order.md
-
-👤 Alice (Sales) is executing...
-  - Customer meeting notes
-  - Create customer_requirements.md
-  - Create sales_proposal.md
-
-✅ Alice completed at 2025-01-30 17:00
-```
-
-### Step 3: System Updates
-
-```
-order.md (auto-updated):
-  Current Actor: engineering_bob  ← Was "Next"
-  Next Actor: manufacturing_eve   ← New next
-  Last: sales_alice (2025-01-30 17:00)
-  Status: ⏳ Waiting for engineering
-
-Git: auto-committed
-```
-
-### Step 4: Next Kick
-
-```bash
-$ codex --kick order.md
-
-👤 Bob (Engineering) is executing...
-  - Read customer_requirements.md
-  - Create implementation_plan.md
-  - Create system_design.md
-
-✅ Bob completed at 2025-01-31 15:00
-```
-
-### Magic: Bob didn't need instructions!
-- He read the order.md
-- He read what Alice did
-- He knew what to do next
-- **Automatic context continuity**
-
----
-
-## 🎓 Learning System Integration
-
-```
-Each Employee Has:
-
-WhoAmI.md
-├─ Name, Role, Department
-├─ Responsibilities
-└─ Authority level
-
-Memory.md
-├─ Previous tasks completed
-├─ Current status
-├─ What worked/didn't work
-└─ Lessons learned
-
-Skills.md
-├─ Pattern #1: Common mistake
-├─ Pattern #2: Common mistake
-├─ Pattern #3: Common mistake
-└─ [Auto-grows with experience]
-
-Mail/inbox/
-├─ Messages from manager
-├─ Messages from other teams
-├─ Requests for info
-└─ [Auto-marked as read when processed]
-```
-
-**Result**: System remembers. System learns. System gets smarter.
-
----
-
-## 👨‍💼 Management Operations
-
-### 1️⃣ Promote Employee
-
-```bash
-vim Employees/sales_alice/WhoAmI.md
-
-# Change:
+### 営業（Sales）
+```markdown
+**Name**: Alice
 **Role**: Sales Representative
-# To:
-**Role**: Senior Sales Manager
+**Department**: Sales
+**Manager**: Manager_Sales
 
-git add & push
-# Alice is now promoted. Next kick she runs as manager.
+## Responsibilities
+- Client meetings
+- Proposal creation
+- Deal closing
+
+## KPI
+- Monthly target: $100k
+- Close rate: >30%
 ```
 
-### 2️⃣ Hire New Employee
+### 技術（Engineering）
+```markdown
+**Name**: Bob
+**Role**: Software Engineer
+**Department**: Engineering
+**Manager**: Manager_Engineering
 
-```bash
-mkdir -p Employees/manufacturing_david/Mail/inbox
+## Responsibilities
+- Code implementation
+- Code review
+- Architecture design
 
-cat > Employees/manufacturing_david/WhoAmI.md << 'EOF'
-**Name**: David
+## Technology Stack
+- Python
+- PostgreSQL
+- Docker
+```
+
+### 製造（Manufacturing）
+```markdown
+**Name**: Eve
 **Role**: Production Manager
 **Department**: Manufacturing
 **Manager**: Manager_Manufacturing
-EOF
 
-git add & push
-# David is now in the system. Can be used in order.md
+## Responsibilities
+- Production scheduling
+- Quality control
+- Equipment maintenance
+
+## Line
+- Assembly Line #2
+- Staff: 5 people
 ```
 
-### 3️⃣ Create New Workflow
+### 品質保証（QA）
+```markdown
+**Name**: Frank
+**Role**: QA Engineer
+**Department**: QA
+**Manager**: Manager_QA
 
-```bash
-cat > order_product_launch.md << 'EOF'
-**Current Actor**: sales_alice
-**Next Actor**: engineering_bob
-**Next Next**: manufacturing_eve
-**Next Next Next**: qa_frank
+## Responsibilities
+- Test case design
+- Test execution
+- Bug tracking
 
-# Product Launch Workflow
-...
-EOF
-
-git add & push
-
-# Ready to kick:
-$ codex --kick order_product_launch.md
+## Tools
+- TestNG
+- Selenium
+- JIRA
 ```
 
-### 4️⃣ Organize Multiple Projects
+### 総務（HR）
+```markdown
+**Name**: Grace
+**Role**: HR Manager
+**Department**: HR
+**Manager**: CEO
 
-```
-orders/
-├── order_customer_integration.md
-├── order_product_launch.md
-├── order_bug_fix.md
-└── order_infrastructure_upgrade.md
+## Responsibilities
+- Recruitment
+- Employee relations
+- Payroll
 
-# Each can run independently
-$ codex --kick order_customer_integration.md
-$ codex --kick order_product_launch.md
-# etc.
+## Headcount
+- Current: 25
+- Target: 30
 ```
 
 ---
 
-## 💾 State Management
+## 🔄 実行例：営業 → 技術 → 品質保証
 
-### order.md evolves:
+### Step 1: 営業がキック
+
+```bash
+$ codex --kick order.md
+
+📖 order.md読み込み中...
+🔍 Current Actor: sales_alice
+   Next Actor: engineering_bob
+
+👤 Alice (Sales) がタスク実行中...
+  - 顧客打ち合わせ実施
+  - 仕様書取得
+  - Requirements.md 作成
+
+✅ Alice 完了
+📝 order.md 更新:
+   Status: ⏳ Waiting for engineering
+   Current Actor: engineering_bob  ← 自動更新
+   Last: sales_alice (2025-01-30 11:00)
+```
+
+### Step 2: 技術がキック（あなたが再度キック）
+
+```bash
+$ codex --kick order.md
+
+📖 order.md読み込み中...
+🔍 Current Actor: engineering_bob
+   Next Actor: qa_charlie
+
+👤 Bob (Engineering) がタスク実行中...
+  - 仕様確認
+  - 設計実施
+  - Implementation_plan.md 作成
+
+✅ Bob 完了
+📝 order.md 更新:
+   Status: ⏳ Waiting for QA
+   Current Actor: qa_charlie  ← 自動更新
+   Last: engineering_bob (2025-01-30 15:00)
+```
+
+### Step 3: 品質保証がキック
+
+```bash
+$ codex --kick order.md
+
+📖 order.md読み込み中...
+🔍 Current Actor: qa_charlie
+   Next Actor: None (完了)
+
+👤 Charlie (QA) がタスク実行中...
+  - テスト計画作成
+  - テストケース設計
+  - Test_plan.md 作成
+
+✅ Charlie 完了
+📝 order.md 更新:
+   Status: ✅ DONE
+   Current Actor: None
+   Last: qa_charlie (2025-01-30 17:00)
+```
+
+---
+
+## 🔀 複雑なパイプライン例
+
+### 営業 → 技術 → 製造 → 品質保証 → 総務
 
 ```markdown
-# Initial
+# Order - 新製品立ち上げ
+
+**Status**: ⏳ Waiting for sales
+**Current Actor**: sales_alice
+**Actors**: sales_alice → engineering_bob → manufacturing_eve → qa_frank → hr_grace
+
+---
+
+## Pipeline
+
+1️⃣ Sales (営業_Alice)
+   └─ 市場調査・顧客要件確認
+   └─ Next: engineering_bob
+
+2️⃣ Engineering (技術_Bob)
+   └─ 製品設計・仕様確定
+   └─ Next: manufacturing_eve
+
+3️⃣ Manufacturing (製造_Eve)
+   └─ 生産計画・生産準備
+   └─ Next: qa_frank
+
+4️⃣ QA (品質保証_Frank)
+   └─ テスト実施・品質確認
+   └─ Next: hr_grace
+
+5️⃣ HR (総務_Grace)
+   └─ 販売研修・ドキュメント配布
+   └─ Next: Done
+```
+
+---
+
+## 🎯 分岐パイプライン例
+
+複数の並列実行も可能：
+
+```markdown
+# Order - 複数部門対応
+
+**Status**: ⏳ Multi-actor execution
+**Current Actors**: 
+  - sales_alice (営業)
+  - engineering_bob (技術)
+  - manufacturing_eve (製造)
+
+**Next Actors**:
+  - qa_frank (全部門の成果を統合テスト)
+
+---
+
+各部門が並列実行后、
+QAが集約テスト → 完了
+```
+
+実装はシンプル：
+```markdown
+**Current Actors**: [sales_alice, engineering_bob, manufacturing_eve]
+**Next Actors**: [qa_frank]
+
+Codex は複数を並列実行、全て完了後に qa_frank へ
+```
+
+---
+
+## 💾 order.md の最小フォーマット
+
+```markdown
+# Order
+
 **Status**: ⏳ Waiting for sales_alice
 **Current Actor**: sales_alice
 **Next Actor**: engineering_bob
 
 ---
-[after kick 1]
 
-**Status**: ⏳ Waiting for engineering_bob
-**Current Actor**: engineering_bob
-**Next Actor**: manufacturing_eve
-**Completed**: [sales_alice at 2025-01-30 17:00]
+営業は顧客から仕様を取得してください。
+```
 
----
-[after kick 2]
-
-**Status**: ⏳ Waiting for manufacturing_eve
-**Current Actor**: manufacturing_eve
-**Next Actor**: qa_frank
-**Completed**: [engineering_bob at 2025-01-31 15:00]
+それだけでOK。
+- Codex が sales_alice を起動
+- Sales_alice の WhoAmI, Skills, Memory を全て読み込む
+- 指示を実行
+- 完了時に Status を更新
+- Next Actor が自動的に「現在のActor」になる
 
 ---
-[after kick 3]
 
-**Status**: ⏳ Waiting for qa_frank
-**Current Actor**: qa_frank
-**Next Actor**: None
-**Completed**: [manufacturing_eve at 2025-02-01 12:00]
+## 🛠️ CLI 実装（Pseudocode）
 
----
-[after kick 4]
-
-**Status**: ✅ DONE
-**Current Actor**: None
-**Next Actor**: None
-**Completed**: [qa_frank at 2025-02-02 16:00]
+```python
+def kick_system(order_file: str):
+    """
+    キックシステムの実行エンジン
+    """
+    
+    # Step 1: order.md を読む
+    order = read_markdown(order_file)
+    
+    # Step 2: Current Actor を判定
+    current_actor = order['Current Actor']
+    next_actor = order['Next Actor']
+    
+    if not current_actor:
+        print("✅ Pipeline complete!")
+        return
+    
+    # Step 3: 社員フォルダを起動
+    employee_folder = f"Employees/{current_actor}/"
+    
+    # Step 4: 社員のコンテキストを読み込む
+    whoami = read(f"{employee_folder}/WhoAmI.md")
+    memory = read(f"{employee_folder}/これまでやっていたこと.md")
+    skills = read(f"{employee_folder}/Skills.md")
+    mails = list_files(f"{employee_folder}/Mail/inbox/")
+    
+    print(f"👤 {whoami['Name']} ({whoami['Role']}) がタスク実行中...")
+    
+    # Step 5: 指示を実行
+    result = execute_order(order, whoami, skills)
+    
+    # Step 6: 結果を出力
+    write_file(f"{employee_folder}/result.md", result)
+    
+    # Step 7: order.md を更新 ← 重要！
+    order['Status'] = f"⏳ Waiting for {next_actor}" if next_actor else "✅ DONE"
+    order['Current Actor'] = next_actor
+    order['Last Completed By'] = current_actor
+    order['Last Completed At'] = get_timestamp()
+    
+    write_markdown(order_file, order)
+    
+    # Step 8: Git push
+    git_commit(f"chore: Update order - {current_actor} completed")
+    git_push()
+    
+    print(f"✅ {current_actor} completed")
+    if next_actor:
+        print(f"👉 Next: {next_actor}")
+    else:
+        print("🎉 Pipeline complete!")
 ```
 
 ---
 
-## ✨ Why This Works
+## 👨‍💼 管理職の権限
 
-### 1. Simple for You
+### 権限1: 部下の WhoAmI 編集
+
+```bash
+# Manager が部下を昇進させたい
+$ vim Employees/sales_alice/WhoAmI.md
+
+# Role を更新
+**Name**: Alice
+**Role**: Senior Sales Manager  ← 昇進
+**Salary**: $150k  ← 給与更新
+
+$ git add & commit & push
+# Alice が次回起動時に新しいロールで実行される
+```
+
+### 権限2: 新しい部下を追加
+
+```bash
+# 新しい製造マネージャーを雇用
+$ mkdir -p Employees/manufacturing_dave/Mail/inbox
+
+$ cat > Employees/manufacturing_dave/WhoAmI.md << 'EOF'
+**Name**: Dave
+**Role**: Manufacturing Manager
+**Department**: Manufacturing
+**Manager**: Manager_Manufacturing
+EOF
+
+$ git add & commit & push
+
+# これでもう Dave は "manufacturing_dave" として
+# order.md で使用可能
+```
+
+### 権限3: order.md でパイプラインを指定
+
+```bash
+# 新しいプロセスを定義
+$ cat > order_new_product_launch.md << 'EOF'
+# Order - 新製品立ち上げ
+
+**Current Actor**: sales_alice
+**Next Actor**: engineering_bob
+...
+EOF
+
+$ git add & commit & push
+$ codex --kick order_new_product_launch.md
+```
+
+---
+
+## ✨ 完璧なシンプルさ
+
+**あなたがやること**:
 ```bash
 $ codex --kick order.md
-# Done. One command.
 ```
 
-### 2. Self-Healing System
-```
-Each employee has their full context:
-✅ Who they are (WhoAmI)
-✅ What they did (Memory)
-✅ What they learned (Skills)
-✅ What they need (Mail)
+**管理職がやること**:
+- WhoAmI.md を vim で編集（昇進、部門変更など）
+- フォルダを mkdir で作成（新人採用）
+- order.md で実行フロー指定
 
-→ No "context loss"
-→ No "miscommunication"
-→ Every step correct
-```
-
-### 3. Automatic Learning
-```
-Year 1:
-- Employee encounters error
-- Records in Skills.md
-- Next similar situation → knows the fix
-
-Year 2:
-- Same employee encounters new error
-- But similar to old pattern
-- Recognizes it, avoids it
-
-Year 5:
-- Employee is expert
-- Has learned 365 patterns
-- Makes no mistakes
-```
-
-### 4. Scales to Infinity
-```
-1 employee: Works
-10 employees: Works
-100 employees: Works
-1000 employees: Works
-
-Why? Because each employee only manages their own:
-✅ Memory (their history)
-✅ Skills (their lessons)
-✅ Tasks (their work)
-
-No central "god controller"
-Each is independent
-System scales effortlessly
-```
+**Codex がやること**:
+- 全自動実行
+- コンテキスト読み込み
+- 次の人に自動バトンタッチ
+- 全て Git に記録
 
 ---
 
-## 🚀 Roadmap
+**Status**: 🟢 **Kick System Ready**
 
-### ✅ Done
-- [x] KickSystem.md (architecture)
-- [x] order.md (template)
-- [x] Employees/sales_alice/ (example)
-- [x] Employees/engineering_bob/ (example)
-
-### ⏳ Next
-- [ ] Implement CLI: `codex --kick order.md`
-- [ ] Test with Alice → Bob pipeline
-- [ ] Add manufacturing_eve
-- [ ] Add qa_frank
-- [ ] Run complete 4-step workflow
-
-### 🎯 Final
-- [ ] 10+ employees working
-- [ ] Multiple concurrent workflows
-- [ ] Full production use
-
----
-
-## 📂 Folder Structure (Complete)
-
-```
-virtual-company/
-├── README.md                     # Main entry
-├── SYSTEM.md                     # Full vision
-├── KickSystem.md                 # This file (THE CORE)
-├── order.md                      # Template workflow
-│
-├── Employees/
-│   ├── sales_alice/
-│   │   ├── WhoAmI.md            # Saleswoman
-│   │   ├── Memory.md            # What she did
-│   │   ├── Skills.md            # What she learned
-│   │   └── Mail/inbox/
-│   │
-│   ├── engineering_bob/
-│   │   ├── WhoAmI.md            # Engineer
-│   │   ├── Memory.md
-│   │   ├── Skills.md
-│   │   └── Mail/inbox/
-│   │
-│   ├── manufacturing_eve/       # (To be created)
-│   ├── qa_frank/                # (To be created)
-│   └── ...
-│
-└── (Other docs)
-```
-
----
-
-## 🎉 The Beauty of Simplicity
-
-```
-Before:
-  - Slack messages everywhere
-  - Email chains confused
-  - "Who was supposed to do this?"
-  - Context lost
-  - Mistakes repeated
-  
-After (Kick System):
-  - One file per workflow
-  - Clear actor sequence
-  - "Who's next?" = In the file
-  - Context preserved
-  - Mistakes learned and prevented
-
-Tool: $ codex --kick order.md
-Cost: 1 command
-Result: Entire organization runs automatically
-```
-
----
-
-## 🎯 Remember
-
-- **You**: `codex --kick order.md`
-- **Manager**: Edit WhoAmI.md, mkdir new employees
-- **System**: Learns, remembers, improves forever
-- **Result**: Self-running organization
-
----
-
-**Status**: 🟢 **Ready to Implement**
-
-Let's build this. 🚀
+これが本当のシンプルさです。 🚀
