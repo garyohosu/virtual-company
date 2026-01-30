@@ -13,6 +13,7 @@ from .db import (
     connect_db,
     default_expiry,
     ensure_db,
+    init_db,
     is_new_day,
     utcnow_str,
 )
@@ -47,6 +48,7 @@ def _resolve_identifier(request: Request) -> tuple[str, bool]:
 
 
 def _load_tracker(conn, identifier: str):
+    init_db(conn)
     row = conn.execute(
         "SELECT identifier, save_count, last_reset, is_premium FROM track_limit_daily WHERE identifier = ?",
         (identifier,),
