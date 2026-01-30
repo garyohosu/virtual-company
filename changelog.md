@@ -92,3 +92,5 @@
 **Next Agent**: CEO
 **Learning**: Documented Error Pattern 006 for pip/pydantic-core build failure
 **File**: skills/errors/006.md
+**Learning**: Documented Error Pattern 007 for git push non-fast-forward
+**File**: skills/errors/007.md

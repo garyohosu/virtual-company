@@ -98,6 +98,14 @@ If NO:
 **Details**: 竊・skills/errors/006.md
 
 ---
+### Error Pattern 007: git push rejected (fetch first)
+
+**What**: ! [rejected] main -> main (fetch first)
+
+**Quick Fix**: Run git pull --rebase then push again  
+**Details**: 竊・skills/errors/007.md
+
+---
 ## 笞・・Adding New Skills
 
 When you (any agent) encounter a NEW error:
@@ -201,4 +209,5 @@ virtual-company/
 **Last Updated**: 2025-01-30  
 **Version**: 1.0  
 **Status**: Ready for first task
+
 
