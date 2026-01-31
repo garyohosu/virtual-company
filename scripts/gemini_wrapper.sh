@@ -4,9 +4,9 @@
 
 set -e
 
-# ========================================
-# 設定
-# ========================================
+# ========================================  
+# 設定  
+# ========================================  
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 INSTRUCTIONS_FILE="$1"
 RESULTS_DIR="$REPO_ROOT/results/gemini"
@@ -26,9 +26,9 @@ fi
 # ディレクトリ作成
 mkdir -p "$RESULTS_DIR"
 
-# ========================================
-# 実行情報
-# ========================================
+# ========================================  
+# 実行情報  
+# ========================================  
 TIMESTAMP=$(date +%Y-%m-%d_%H-%M-%S)
 INSTRUCTIONS_BASENAME=$(basename "$INSTRUCTIONS_FILE" .md)
 OUTPUT_FILE="$RESULTS_DIR/${TIMESTAMP}_${INSTRUCTIONS_BASENAME}.md"
@@ -44,19 +44,16 @@ echo "出力先: $OUTPUT_FILE"
 echo "========================================="
 echo ""
 
-# ========================================
-# Gemini CLI 実行（シミュレーション）
-# ========================================
+# ========================================  
+# Gemini CLI 実行  
+# ========================================  
 START_TIME=$(date +%s)
 EXIT_CODE=0
 
 echo "📋 指示書を実行中..."
-# NOTE: 実際のgeminiコマンドはローカル環境でのみ動作するため、
-# ここではシミュレーションとして指示書の内容を表示
-if cat "$INSTRUCTIONS_FILE" > "$TEMP_OUTPUT" 2> "$TEMP_ERROR"; then
-    echo "✅ 指示書の読み込み成功" >> "$TEMP_OUTPUT"
+if gemini --yolo "$INSTRUCTIONS_FILE" > "$TEMP_OUTPUT" 2> "$TEMP_ERROR"; then
     EXIT_CODE=0
-    STATUS="✅ SUCCESS (Simulated)"
+    STATUS="✅ SUCCESS"
     STATUS_EMOJI="✅"
 else
     EXIT_CODE=$?
@@ -67,9 +64,9 @@ fi
 END_TIME=$(date +%s)
 DURATION=$((END_TIME - START_TIME))
 
-# ========================================
-# 結果をMDファイルに保存
-# ========================================
+# ========================================  
+# 結果をMDファイルに保存  
+# ========================================  
 cat > "$OUTPUT_FILE" << EOF
 # 📝 Gemini CLI 実行結果
 
@@ -150,6 +147,25 @@ else
 3. **再実行**
    - 修正後、再度実行して確認
 
+### 🔍 トラブルシューティング
+
+#### よくあるエラー
+
+1. **ファイルが見つからない**
+   - パスが正しいか確認
+   - ファイルが存在するか確認
+
+2. **権限エラー**
+   - 実行権限を付与: \`chmod +x <file>\`
+
+3. **依存関係エラー**
+   - 必要なパッケージをインストール
+   - \`npm install\` / \`pip install\` など
+
+4. **構文エラー**
+   - スクリプトの構文を確認
+   - シェルスクリプトの場合: \`bash -n <file>\`
+
 EOF
 fi
 
@@ -159,19 +175,19 @@ cat >> "$OUTPUT_FILE" << EOF
 ---
 
 **生成日時**: $(date '+%Y-%m-%d %H:%M:%S')  
-**実行者**: Gemini CLI Wrapper  
+**実行者**: Gemini CLI  
 **ラッパースクリプト**: \`scripts/gemini_wrapper.sh\`
 EOF
 
-# ========================================
-# 実行履歴をJSONに追記
-# ========================================
+# ========================================  
+# 実行履歴をJSONに追記  
+# ========================================  
 if [ ! -f "$LOG_FILE" ]; then
     echo "[]" > "$LOG_FILE"
 fi
 
-# 新しいエントリを作成（jqなしでも動作するように簡易実装）
-cat >> "$LOG_FILE.tmp" << EOF
+# 新しいエントリを作成
+NEW_ENTRY=$(cat << EOF
 {
   "timestamp": "$(date -Iseconds)",
   "instructions_file": "$INSTRUCTIONS_FILE",
@@ -181,10 +197,36 @@ cat >> "$LOG_FILE.tmp" << EOF
   "duration_seconds": $DURATION
 }
 EOF
+)
 
-# ========================================
-# 結果表示
-# ========================================
+# JSONに追記（jqを使用）
+if command -v jq &> /dev/null; then
+    TMP_LOG="/tmp/execution_log_$$.json"
+    jq ". += [$NEW_ENTRY]" "$LOG_FILE" > "$TMP_LOG"
+    mv "$TMP_LOG" "$LOG_FILE"
+else
+    # jqがない場合はPythonスクリプトを使用
+    if [ -f "$REPO_ROOT/scripts/log_result.py" ]; then
+        python3 "$REPO_ROOT/scripts/log_result.py" "$REPO_ROOT" "$INSTRUCTIONS_FILE" "$OUTPUT_FILE" "$STATUS" "$EXIT_CODE" "$DURATION"
+    else
+        echo "WARNING: jq and log_result.py not found. JSON log not updated."
+    fi
+fi
+
+# ========================================  
+# Gitへの自動コミット (成功時のみ)  
+# ========================================  
+if [ $EXIT_CODE -eq 0 ]; then
+    echo "📝 結果をGitにコミット中..."
+    git add "$OUTPUT_FILE" "$LOG_FILE"
+    git commit -m "chore: Add Gemini CLI execution result - $(basename "$OUTPUT_FILE" .md)"
+    # git push origin main  # 安全のためコメントアウト。必要に応じて有効化
+    echo "✅ Gitにコミット完了"
+fi
+
+# ========================================  
+# 結果表示  
+# ========================================  
 echo ""
 echo "========================================="
 echo "$STATUS_EMOJI 実行完了"
@@ -195,6 +237,9 @@ echo "結果ファイル: $OUTPUT_FILE"
 echo ""
 echo "📄 結果を確認:"
 echo "  cat $OUTPUT_FILE"
+echo ""
+echo "📋 履歴を確認:"
+echo "  cat $LOG_FILE"
 echo "========================================="
 
 # 一時ファイルを削除
