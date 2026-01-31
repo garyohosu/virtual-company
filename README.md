@@ -107,6 +107,19 @@ Git に push（監査証跡）
 └─────────────────────────┘
 ```
 
+### 🎮 MagicBoxAI (PHP Version)
+Sakura レンタルサーバー向けに最適化された PHP + CGI 実装です。
+
+**デプロイ方法:**
+```bash
+python scripts/deploy_sakura_php.py
+```
+
+**テスト方法 (Remote):**
+```bash
+$env:MAGICBOXAI_BASE_URL="https://garyo.sakura.ne.jp/magicboxai"; python -m pytest tests/test_magicboxai_api.py
+```
+
 ---
 
 ## 🚀 使い方（3ステップ）
