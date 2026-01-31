@@ -1,28 +1,20 @@
-# EXECUTION LOG - Codex CLI
+﻿# EXECUTION LOG - Codex CLI
 
-Date: 2026-01-31T08:29:16.2458770+09:00
+Timestamp: 2026-01-31T08:58:46+09:00
+Task: MagicBoxAI deployment diagnostic (Sakura)
 
-## Steps Executed
-1. git pull (completed)
-2. Read Agents.md / Skills.md / Memory.md / tasks/CURRENT_TASK.md
-3. Read order_sakura_final_index_htaccess.md
-4. SSH: backup and remove existing index.html
-5. SSH: write new index.html redirect
-6. SSH: create .htaccess with Options -Indexes
-7. SSH: list public_html and confirm files
-8. SSH: create FINAL_SETUP_COMPLETE.txt
+Steps:
+- Pulled latest repository state
+- Read Agents.md, Skills.md, Memory.md, CURRENT_TASK.md, and prior RESULT.md files
+- Built and uploaded a diagnostic script to Sakura
+- Executed remote diagnostics and captured /tmp/magicboxai_check.md
+- Stored report at results/diagnosis/MAGICBOXAI_FILE_CHECK.md
 
-## Notes / Errors
-- Sakura shell is csh; $(date) failed in non-bourne context. Used explicit timestamp instead.
-- 127.0.0.1 curl checks still fail with connection refused (seen previously).
+Commands (high level):
+- git pull
+- scp .tmp_magicboxai_check.sh garyo@garyo.sakura.ne.jp:/tmp/magicboxai_check.sh
+- ssh garyo@garyo.sakura.ne.jp "bash /tmp/magicboxai_check.sh"
+- ssh garyo@garyo.sakura.ne.jp "cat /tmp/magicboxai_check.md"
 
-## Files Created/Updated (Server)
-- ~/public_html/index.html
-- ~/public_html/index.html.old
-- ~/public_html/.htaccess
-- ~/public_html/FINAL_SETUP_COMPLETE.txt
-
-## Local Files Updated
-- results/codex/RESULT.md
-- results/codex/EXECUTION_LOG.md
-- changelog.md (pending)
+Notes:
+- Adjusted script generation to avoid CRLF and shell quoting issues.
