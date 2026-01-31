@@ -1,6 +1,13 @@
 <?php
 // MagicBoxAI - PHP + CGI 版 (Fixed Routing & HTTPS)
 
+session_start();
+
+// CSRFトークン生成（初回のみ）
+if (!isset($_SESSION['csrf_token'])) {
+    $_SESSION['csrf_token'] = bin2hex(random_bytes(32));
+}
+
 header('Content-Type: text/html; charset=UTF-8');
 $db_file = __DIR__ . '/data/magicboxai.db';
 
@@ -46,15 +53,53 @@ if ($request_path === '/') {
 
 function handle_save() {
     header('Content-Type: application/json');
-    $input = file_get_contents('php://input');
-    $data = json_decode($input, true);
-    if (!isset($data['html']) || trim($data['html']) === '') {
-        http_response_code(400); echo json_encode(['error' => 'HTML content required']); return;
+    
+    // 1. CSRF検証
+    $csrf_token = null;
+    $html = null;
+
+    if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+        if (strpos($_SERVER['CONTENT_TYPE'], 'application/json') !== false) {
+            $input = file_get_contents('php://input');
+            $data = json_decode($input, true);
+            $csrf_token = $data['csrf_token'] ?? null;
+            $html = $data['html'] ?? null;
+        } else {
+            $csrf_token = $_POST['csrf_token'] ?? null;
+            $html = $_POST['html'] ?? null;
+        }
     }
+
+    if (!$csrf_token || !isset($_SESSION['csrf_token']) || !hash_equals($_SESSION['csrf_token'], $csrf_token)) {
+        http_response_code(403);
+        echo json_encode(['success' => false, 'error' => 'CSRF validation failed']);
+        exit;
+    }
+
+    // 2. HTMLの検証
+    if (!$html || trim($html) === '') {
+        http_response_code(400);
+        echo json_encode(['success' => false, 'error' => 'HTML content required']);
+        exit;
+    }
+    
+    // 3. ファイルサイズ制限（1MB）
+    if (strlen($html) > 1 * 1024 * 1024) {
+        http_response_code(413);
+        echo json_encode(['success' => false, 'error' => 'File too large (max 1MB)']);
+        exit;
+    }
+
     $token = bin2hex(random_bytes(8));
     $save_dir = __DIR__ . '/data/uploads';
     if (!is_dir($save_dir)) mkdir($save_dir, 0755, true);
-    file_put_contents($save_dir . '/' . $token . '.html', $data['html']);
+    
+    $file_path = $save_dir . '/' . $token . '.html';
+    if (file_put_contents($file_path, $html) === false) {
+        http_response_code(500);
+        echo json_encode(['success' => false, 'error' => 'Failed to save file']);
+        exit;
+    }
 
     $retentionDays = getenv('MAGICBOXAI_RETENTION_DAYS') ? (int)getenv('MAGICBOXAI_RETENTION_DAYS') : 30;
     $metadata = [
@@ -71,6 +116,7 @@ function handle_save() {
     http_response_code(201);
     echo json_encode([
         'status' => 'saved', 
+        'success' => true,
         'token' => $token, 
         'public_url' => rtrim($base_url, '/') . '/view/' . $token,
         'expires_at' => $metadata['expires_at']
@@ -78,12 +124,35 @@ function handle_save() {
 }
 
 function handle_view($token) {
+    // 1. IDの厳密な検証（英数字のみ、8バイトのbin2hexは16文字）
+    if (!preg_match('/^[a-f0-9]{16}$/', $token)) {
+        http_response_code(400);
+        die('Invalid ID format');
+    }
+
     $save_dir = __DIR__ . '/data/uploads';
     $file_path = $save_dir . '/' . $token . '.html';
-    if (!file_exists($file_path)) {
+    
+    // 2. パストラバーサル対策（realpath使用）
+    $realFile = realpath($file_path);
+    $uploadsDir = realpath($save_dir);
+    
+    if ($realFile === false || strpos($realFile, $uploadsDir) !== 0) {
+        http_response_code(404);
+        die('Not found');
+    }
+
+    if (!file_exists($realFile)) {
         http_response_code(404); echo 'Not found'; return;
     }
+
+    // 3. セキュリティヘッダーの追加
+    header("Content-Security-Policy: sandbox allow-scripts allow-same-origin;");
+    header("X-Content-Type-Options: nosniff");
+    header("X-Frame-Options: SAMEORIGIN");
+    header("Referrer-Policy: no-referrer");
     header('Content-Type: text/html; charset=UTF-8');
-    readfile($file_path);
+    
+    readfile($realFile);
 }
 ?>

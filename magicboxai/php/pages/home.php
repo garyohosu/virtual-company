@@ -151,6 +151,8 @@ $retentionDays = getenv('MAGICBOXAI_RETENTION_DAYS') ? (int)getenv('MAGICBOXAI_R
     </div>
 
     <script>
+        const CSRF_TOKEN = '<?php echo $_SESSION['csrf_token']; ?>';
+
         function preview() {
             const html = document.getElementById('htmlInput').value;
             const iframe = document.getElementById('preview');
@@ -169,11 +171,14 @@ $retentionDays = getenv('MAGICBOXAI_RETENTION_DAYS') ? (int)getenv('MAGICBOXAI_R
             fetch('./index.php/api/save', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ html: html })
+                body: JSON.stringify({ 
+                    html: html,
+                    csrf_token: CSRF_TOKEN
+                })
             })
             .then(r => r.json())
             .then(data => {
-                if (data.status === 'saved') {
+                if (data.success || data.status === 'saved') {
                     showStatus('✅ 保存しました！', 'success');
                     document.getElementById('publicUrl').value = data.public_url;
                     document.getElementById('urlSection').style.display = 'block';
