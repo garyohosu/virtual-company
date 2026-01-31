@@ -55,7 +55,13 @@ function handle_save() {
     $save_dir = __DIR__ . '/data/uploads';
     if (!is_dir($save_dir)) mkdir($save_dir, 0755, true);
     file_put_contents($save_dir . '/' . $token . '.html', $data['html']);
-    $metadata = ['token' => $token, 'created_at' => date('c'), 'expires_at' => date('c', strtotime('+30 days'))];
+
+    $retentionDays = getenv('MAGICBOXAI_RETENTION_DAYS') ? (int)getenv('MAGICBOXAI_RETENTION_DAYS') : 30;
+    $metadata = [
+        'token' => $token, 
+        'created_at' => date('c'), 
+        'expires_at' => date('c', strtotime("+{$retentionDays} days"))
+    ];
     file_put_contents($save_dir . '/' . $token . '.json', json_encode($metadata));
     
     // HTTPS 対応

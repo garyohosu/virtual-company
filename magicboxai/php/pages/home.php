@@ -1,3 +1,6 @@
+<?php
+$retentionDays = getenv('MAGICBOXAI_RETENTION_DAYS') ? (int)getenv('MAGICBOXAI_RETENTION_DAYS') : 30;
+?>
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -135,7 +138,7 @@
                     <p>このURL を共有してください：</p>
                     <input type="text" id="publicUrl" readonly>
                     <p style="margin-top: 10px; font-size: 12px; color: #666;">
-                        30日後に自動削除されます
+                        <?php echo $retentionDays; ?>日後に自動削除されます
                     </p>
                 </div>
             </div>

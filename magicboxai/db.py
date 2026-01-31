@@ -98,4 +98,5 @@ def cleanup_expired(conn: sqlite3.Connection) -> int:
 
 
 def default_expiry() -> str:
-    return (datetime.utcnow() + timedelta(days=30)).strftime(DATE_FMT)
+    retention_days = int(os.getenv("MAGICBOXAI_RETENTION_DAYS", "30"))
+    return (datetime.utcnow() + timedelta(days=retention_days)).strftime(DATE_FMT)
