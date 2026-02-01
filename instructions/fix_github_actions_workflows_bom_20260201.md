@@ -125,10 +125,10 @@ jobs:
           --exclude='composer.lock' \
           --exclude='README.md' \
           --exclude='.gitignore' \
-          src/ ${SAKURA_USER}@garyo.sakura.ne.jp:~/public_html/magicboxai/src/
+          src/ ${SAKURA_USER}@garyo.sakura.ne.jp:/home/garyo/www/magicboxai/
         
         # Verify deployment
-        ssh -i ~/.ssh/sakura_key -o StrictHostKeyChecking=no ${SAKURA_USER}@garyo.sakura.ne.jp "ls -la ~/public_html/magicboxai/src/"
+        ssh -i ~/.ssh/sakura_key -o StrictHostKeyChecking=no ${SAKURA_USER}@garyo.sakura.ne.jp "ls -la /home/garyo/www/magicboxai/"
 EOF
 
 # BOM がないことを確認
@@ -250,7 +250,7 @@ Deploy to Sakura のログで以下を確認：
 ### rsync について
 - `--delete` オプション: サーバー上の余分なファイルを削除
 - `--exclude`: 不要なファイル（.git, tests, vendor など）を除外
-- `src/` → `~/public_html/magicboxai/src/`: src ディレクトリの内容をサーバーにコピー
+- `src/` → `/home/garyo/www/magicboxai/`: src ディレクトリの内容をサーバーにコピー
 
 ---
 

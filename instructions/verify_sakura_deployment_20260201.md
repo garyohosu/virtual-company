@@ -29,63 +29,64 @@
 
 ```bash
 # Sakura サーバーに SSH 接続
+# 正しいパス: /home/garyo/www/magicboxai/
 ssh garyo@garyo.sakura.ne.jp << 'EOF'
 
 echo "=== 1. ファイルの存在確認 ==="
-ls -lh ~/public_html/magicboxai/src/index.php
+ls -lh /home/garyo/www/magicboxai/index.php
 echo ""
 
 echo "=== 2. ファイルサイズと行数 ==="
-wc -l ~/public_html/magicboxai/src/index.php
-wc -c ~/public_html/magicboxai/src/index.php
+wc -l /home/garyo/www/magicboxai/index.php
+wc -c /home/garyo/www/magicboxai/index.php
 echo ""
 
 echo "=== 3. Example Prompts が含まれているか ==="
-grep -c 'Example Prompts' ~/public_html/magicboxai/src/index.php || echo "0"
-grep -c 'example' ~/public_html/magicboxai/src/index.php || echo "0"
+grep -c 'Example Prompts' /home/garyo/www/magicboxai/index.php || echo "0"
+grep -c 'example' /home/garyo/www/magicboxai/index.php || echo "0"
 echo ""
 
 echo "=== 4. 最後の5行を確認（</html> で終わっているか） ==="
-tail -5 ~/public_html/magicboxai/src/index.php
+tail -5 /home/garyo/www/magicboxai/index.php
 echo ""
 
 echo "=== 5. ファイルの先頭5行を確認（BOM がないか） ==="
-head -5 ~/public_html/magicboxai/src/index.php
+head -5 /home/garyo/www/magicboxai/index.php
 echo ""
 
 echo "=== 6. BOM の確認 ==="
-od -c ~/public_html/magicboxai/src/index.php | head -1
+od -c /home/garyo/www/magicboxai/index.php | head -1
 echo ""
 
 echo "=== 7. home.php の確認 ==="
-if [ -f ~/public_html/magicboxai/src/pages/home.php ]; then
+if [ -f /home/garyo/www/magicboxai/pages/home.php ]; then
   echo "home.php exists"
-  wc -l ~/public_html/magicboxai/src/pages/home.php
-  grep -c 'Example Prompts' ~/public_html/magicboxai/src/pages/home.php || echo "0"
-  grep -c 'Tailwind' ~/public_html/magicboxai/src/pages/home.php || echo "0"
-  grep -c 'Alpine' ~/public_html/magicboxai/src/pages/home.php || echo "0"
+  wc -l /home/garyo/www/magicboxai/pages/home.php
+  grep -c 'Example Prompts' /home/garyo/www/magicboxai/pages/home.php || echo "0"
+  grep -c 'Tailwind' /home/garyo/www/magicboxai/pages/home.php || echo "0"
+  grep -c 'Alpine' /home/garyo/www/magicboxai/pages/home.php || echo "0"
 else
   echo "home.php NOT FOUND!"
 fi
 echo ""
 
 echo "=== 8. ディレクトリ構造の確認 ==="
-ls -la ~/public_html/magicboxai/
+ls -la /home/garyo/www/magicboxai/
 echo ""
-ls -la ~/public_html/magicboxai/src/
+ls -la /home/garyo/www/magicboxai/
 echo ""
 
 echo "=== 9. .htaccess の確認 ==="
-if [ -f ~/public_html/magicboxai/.htaccess ]; then
-  cat ~/public_html/magicboxai/.htaccess
+if [ -f /home/garyo/www/magicboxai/.htaccess ]; then
+  cat /home/garyo/www/magicboxai/.htaccess
 else
   echo ".htaccess NOT FOUND!"
 fi
 echo ""
 
 echo "=== 10. 最終更新日時 ==="
-stat ~/public_html/magicboxai/src/index.php | grep Modify
-stat ~/public_html/magicboxai/src/pages/home.php | grep Modify 2>/dev/null || echo "home.php not found"
+stat /home/garyo/www/magicboxai/index.php | grep Modify
+stat /home/garyo/www/magicboxai/pages/home.php | grep Modify 2>/dev/null || echo "home.php not found"
 echo ""
 
 EOF
@@ -159,7 +160,7 @@ if [ -f "$SSH_KEY_PATH" ]; then
     --exclude='composer.lock' \
     --exclude='README.md' \
     --exclude='.gitignore' \
-    src/ garyo@garyo.sakura.ne.jp:~/public_html/magicboxai/src/
+    src/ garyo@garyo.sakura.ne.jp:/home/garyo/www/magicboxai/
   
   echo "✅ Manual deployment completed"
 else
@@ -191,7 +192,7 @@ cat << 'EOF'
 4. Sakura サーバー側で PHP キャッシュをクリア
    ssh garyo@garyo.sakura.ne.jp
    # もし OPcache が有効な場合
-   touch ~/public_html/magicboxai/src/index.php
+   touch /home/garyo/www/magicboxai/index.php
    # これでタイムスタンプが更新され、キャッシュが無効化される
 
 EOF
@@ -202,9 +203,9 @@ EOF
 ## ✅ 検証項目
 
 ### 1. ファイルの確認
-- [ ] index.php が存在する（~/public_html/magicboxai/src/index.php）
+- [ ] index.php が存在する（/home/garyo/www/magicboxai/index.php）
 - [ ] index.php のサイズが正しい（約 4.5KB、150行）
-- [ ] home.php が存在する（~/public_html/magicboxai/src/pages/home.php）
+- [ ] home.php が存在する（/home/garyo/www/magicboxai/pages/home.php）
 - [ ] home.php のサイズが正しい（約 21KB、419行）
 
 ### 2. コンテンツの確認
@@ -238,7 +239,7 @@ EOF
 cd ~/garyohosu/magic-box-ai
 rsync -avz --delete \
   -e "ssh -i ~/.ssh/id_rsa" \
-  src/ garyo@garyo.sakura.ne.jp:~/public_html/magicboxai/src/
+  src/ garyo@garyo.sakura.ne.jp:/home/garyo/www/magicboxai/
 ```
 
 ### 問題 2: home.php がない
@@ -252,7 +253,7 @@ ls -la src/pages/home.php
 
 # 存在する場合、手動でアップロード
 scp -i ~/.ssh/id_rsa src/pages/home.php \
-  garyo@garyo.sakura.ne.jp:~/public_html/magicboxai/src/pages/
+  garyo@garyo.sakura.ne.jp:/home/garyo/www/magicboxai/pages/
 ```
 
 ### 問題 3: ブラウザキャッシュ
@@ -270,8 +271,8 @@ scp -i ~/.ssh/id_rsa src/pages/home.php \
 **解決方法**:
 ```bash
 ssh garyo@garyo.sakura.ne.jp
-touch ~/public_html/magicboxai/src/index.php
-touch ~/public_html/magicboxai/src/pages/home.php
+touch /home/garyo/www/magicboxai/index.php
+touch /home/garyo/www/magicboxai/pages/home.php
 ```
 
 ### 問題 5: .htaccess の問題
@@ -280,7 +281,7 @@ touch ~/public_html/magicboxai/src/pages/home.php
 **解決方法**:
 ```bash
 ssh garyo@garyo.sakura.ne.jp
-cat > ~/public_html/magicboxai/.htaccess << 'EOF'
+cat > /home/garyo/www/magicboxai/.htaccess << 'EOF'
 # PHP as CGI
 AddHandler application/x-httpd-phpcgi .php
 
@@ -352,7 +353,7 @@ home.php exists
 3. 問題があれば、手動デプロイを実行
    ```bash
    cd ~/garyohosu/magic-box-ai
-   rsync -avz --delete src/ garyo@garyo.sakura.ne.jp:~/public_html/magicboxai/src/
+   rsync -avz --delete src/ garyo@garyo.sakura.ne.jp:/home/garyo/www/magicboxai/
    ```
 
 4. ブラウザで強制リロード（Ctrl+F5）
@@ -368,3 +369,5 @@ home.php exists
 ---
 
 **この指示書を Gemini CLI で実行すれば、Sakura サーバーの状態を確認し、問題があれば修正できます！**
+*
+��！**
